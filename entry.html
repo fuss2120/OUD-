@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
     <meta charset="utf-8">
     <title>Data entry</title>
+    <script type="text/javascript">
+
+      function userEntered(){
+        alert("User successfully entered");
+        location.reload();
+      }
+
+
+
+    </script>
   </head>
   <body>
-    <div class="aligner">
+    <div id="aligner">
 
       <form>
-        First name<br>
-        <input type=text ><br>
-        Last name<br>
-        <input type=text ><br>
-        Additional Comments<br>
-        <textarea rows="4" cols="50"></textarea><br>
-        <input type=button value="Enter data" >
+        <font class=mainFont>
+          First name<br>
+          <input type=text class="textEntry"><br>
+          Last name<br>
+          <input type=text class="textEntry"><br>
+          Phone number<br>
+          <input type=text class="textEntry"><font size=3px>  Format: 123-456-7890 </font><br>
+          Additional Comments<br>
+          <textarea rows="4" cols="50"></textarea><br>
+          <input type=button class="a_button" value="Enter data" onclick="userEntered()" >
+        </font>
       </form>
 
     </div>

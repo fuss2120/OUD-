@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
     <meta charset="utf-8">
     <title>Login</title>
+    <script type="text/javascript">
+
+      function passwordToggle() {
+        var password = document.getElementById("password");
+
+        if (password.type == "password" ){
+          password.type = "text";
+        }
+        else{
+          password.type = "password";
+        }
+      function userEntered(){
+        alert("User successfully entered");
+      }
+
+      }
+
+    </script>
   </head>
   <body>
-    <div class="aligner">
-
-      <form action="entry.html" method="post">
-        Username<br>
-        <input type=text ><br>
-        Password<br>
-        <input type=text ><br>
-        <input type=submit value="Login" >
-      </form>
-
+    <div id="aligner">
+      <font class=mainFont>
+        <form action="entry.html" method="post">
+          Username<br>
+          <input type="text" class="textEntry" ><br>
+          Password<br>
+          <input type=password class="textEntry" id="password"><br>
+          <font size="4px">Show password</font>
+          <input type=checkbox onclick="passwordToggle()"><br>
+          <input class="a_button" type=submit value="Login" >
+        </form>
+      </font>
     </div>
   </body>
 </html>
