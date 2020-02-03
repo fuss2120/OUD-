@@ -1,0 +1,19 @@
+# OS X specific
+.DS_Store
+
+# Windows specific
+Thumps.db
+ethumbs.db
+Desktop.ini
+
+# Linux specific
+.directory
+
+
+########
+# Project
+########
+
+node_modules
+package-lock.json
+build
