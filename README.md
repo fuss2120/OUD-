@@ -1,7 +1,7 @@
 # Opiod Use Disorder Senior Design Project
 
 # Link to preview our login page:
-# https://htmlpreview.github.io/?https://github.com/fuss2120/OUD-/blob/master/index.html
+# https://htmlpreview.github.io/?https://github.com/fuss2120/OUD-/blob/master/static_content/index.html
 
 # Setup Instructions
 Clone repository to local machine. Make sure NodeJS is installed. <br/>
