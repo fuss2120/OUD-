@@ -1,16 +1,10 @@
-@import url(https://fonts.googleapis.com/css?family=Assistant);
-
 #aligner{
   width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-head{
-  background-color: white;
+  margin: 0 auto;
 }
 
 body{
-  background-color: white;
+  background-color: #acc2d9;
 }
 
 textarea{
@@ -18,7 +12,7 @@ textarea{
   border-width: 2px;
   height:300px;
   width:300px;
-  font-family: 'Assistant', sans-serif;
+  font-family: 'Alatsi', sans-serif;
   font-size:18px;
 }
 input.textEntry{
@@ -26,25 +20,25 @@ input.textEntry{
   height: 20px;
   border-style: solid;
   border-width: 2px;
-  font-family: 'Assistant', sans-serif;
+  font-family: 'Alatsi', sans-serif;
   font-size:18px;
   font-weight: 200;
 }
 
 font.mainFont{
-  font-family: 'Assistant', sans-serif;
+  font-family: 'Alatsi', sans-serif;
   font-size: 24px;
 }
 input.a_button{
   color: #343837;
-  background-color: #FFFFFF;
+  background-color: #d8dcd6;
   font-size: 20px;
   cursor: pointer;
   padding: 16px 32px;
   margin: 12px 0px;
   border-color: black;
   border-width: 1.5px;
-  font-family: 'Assistant', sans-serif;
+  font-family: 'Righteous', cursive;
 
 }
 
