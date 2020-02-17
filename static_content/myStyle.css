@@ -5,7 +5,7 @@
 }
 
 body{
-  background-color: #D3D3D3;
+  background-color: #FFFFFF;
 }
 
 textarea{
@@ -39,7 +39,7 @@ input.a_button{
   margin: 12px 0px;
   border-color: black;
   border-width: 1.5px;
-  font-family: 'Righteous', cursive;
+  font-family: 'Geneva', sans-serif;
 
 }
 
