@@ -16,7 +16,8 @@
     "build-start": "npm run build && npm run start"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "express-session": "^1.17.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
