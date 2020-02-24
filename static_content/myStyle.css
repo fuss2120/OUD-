@@ -2,6 +2,54 @@
   width: 800px;
   margin: 0 auto;
 }
+table{
+  border: 2px solid;
+}
+td, tr{
+  border: 2px solid;
+  padding: 15px;
+  font-family: 'Alatsi', sans-serif;
+
+}
+tr.firstRow{
+  background-color: #9dbcd4;
+}
+input.msgButton{
+  background-color: #9dbcd4;
+  border-color: black;
+  font-family: 'Alatsi', sans-serif;
+  padding: 15px 20px;
+  font-size: 32px;
+
+}
+tr:hover{
+  background-color: #9dbcd4;
+
+}
+.sidebar{
+  height: auto;
+  width: 160px;
+  position: fixed;
+  z-index: 1;
+  top: 2;
+  left: 0;
+  background-color: #9dbcd4;
+  overflow-x: hidden;
+  padding: 10px;
+  border: 1px solid;
+
+}
+
+.sidebar a{
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: black;
+  display: block;
+  font-family: 'Alatsi', sans-serif;
+
+  outline: 2px white;
+}
 
 body{
   background-color: #acc2d9;
