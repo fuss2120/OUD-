@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "express-session": "^1.17.0"
+    "express-session": "^1.17.0",
+    "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
