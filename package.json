@@ -18,6 +18,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "express-session": "^1.17.0",
+    "faker": "^4.1.0",
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "devDependencies": {
