@@ -1,4 +1,19 @@
 import mysql from 'mysql';
+import { setFlagsFromString } from 'v8';
+
+/**
+ * This file exports the object 'dbPool'
+ * dbPool is initialized pool of connections to the database
+ * This file also exports a function 'initializeDatabasePool'
+ * The init functoin must be called in entry to application
+ */
+
+
+export let dbPool;
+
+export const initializeDatabasePool = databaseCredentials => {
+    dbPool = createDatabasePool(databaseCredentials);
+}
 
 
 /**
@@ -6,9 +21,7 @@ import mysql from 'mysql';
  * Similar to a class, but it is a function that returns an objects
  * Allows for asynchronous bindings
  */
-
-
-export default function createDatabasePool(databaseCredentials) {
+function createDatabasePool(databaseCredentials) {
     const pool = mysql.createPool(databaseCredentials);
 
     const query = sql => {
@@ -19,7 +32,7 @@ export default function createDatabasePool(databaseCredentials) {
             })
         })
     }
-
+    
     const getTables = async () => {
         return await query("SHOW TABLES");
     }

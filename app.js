@@ -3,15 +3,16 @@ import express from 'express';
 import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import createDatabasePool from './models/createDatabasePool';
+import { initializeDatabasePool } from './models/dbPool';
 import databaseCredentials from './config/database';
+import { login } from './services';
 
 const app = express()
 dotenv.config();
 const NODE_ENV = process.env.NODE_ENV;
 const dbConfig = databaseCredentials[NODE_ENV];
 
-const dbPool = createDatabasePool(dbConfig);
+initializeDatabasePool(dbConfig);
 
 const static_dir = path.resolve('static_content') + '/';
 
@@ -33,9 +34,15 @@ app.get('/entry', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-  // TODO : check that user exists in database
-  req.session.userInfo = req.body;
-  res.redirect('/entry');
+  login.logUserInWithFormData(req.body)
+  .then(user => {
+    req.session.user = user;
+    res.redirect('/entry');
+  })
+  .catch(error => {
+    console.log(error.message);
+    res.sendFile(static_dir + 'index.html');
+  })
 })
 
 app.listen(3000);
