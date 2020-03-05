@@ -1,8 +1,9 @@
+import "babel-polyfill";
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import DBConnection from './DBConnection';
+import createDatabasePool from './createDatabasePool';
 import databaseCredentials from './config/database';
 
 const app = express()
@@ -10,7 +11,7 @@ dotenv.config();
 const NODE_ENV = process.env.NODE_ENV;
 const dbConfig = databaseCredentials[NODE_ENV];
 
-const dbConnection = new DBConnection(dbConfig);
+const dbPool = createDatabasePool(dbConfig);
 
 const static_dir = path.resolve('static_content') + '/';
 
