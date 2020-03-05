@@ -102,3 +102,7 @@ input.a_button:hover{
   font-size: 12pt;
   font-weight: normal;
 }
+
+#patientDataForm {
+  margin-left: 5cm;
+}
