@@ -96,3 +96,9 @@ input.a_button:hover{
   transition: 1s;
   color: black;
 }
+
+#errorMessage {
+  color: red;
+  font-size: 12pt;
+  font-weight: normal;
+}

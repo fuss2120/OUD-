@@ -36,7 +36,13 @@
           <input type=checkbox onclick="passwordToggle()"><br>
           <input class="a_button" type=submit value="Login" >
         </form>
+      <p id="errorMessage" color="red"></p>
       </font>
     </div>
   </body>
+  <script type="text/javascript">
+    if (window.location.pathname === "/login") {
+      document.getElementById("errorMessage").innerHTML = "Incorrect Username or Password";
+    }
+  </script>
 </html>
