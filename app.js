@@ -37,11 +37,11 @@ app.post('/login', (req, res) => {
   login.logUserInWithFormData(req.body)
   .then(user => {
     req.session.user = user;
-    res.redirect('/entry');
+    return res.send({"success" : true})
   })
   .catch(error => {
     console.log(error.message);
-    res.sendFile(static_dir + 'index.html');
+    return res.send({"sucess": false, "errorMessage": error.message});
   })
 })
 
