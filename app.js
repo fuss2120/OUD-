@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import createDatabasePool from './createDatabasePool';
+import createDatabasePool from './models/createDatabasePool';
 import databaseCredentials from './config/database';
 
 const app = express()

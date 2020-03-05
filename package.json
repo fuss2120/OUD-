@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "jest",
-    "build": "babel *.js config/*.js --out-dir build",
+    "build": "babel app.js config/*.js models/*.js services/*.js --out-dir build",
     "start": "node build/app.js",
     "build-start": "npm run build && npm run start"
   },
