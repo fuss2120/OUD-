@@ -52,7 +52,22 @@ app.post('/enter_user', (req, res) => {
   })
   .catch(error => {
     console.log(error.message);
-    return res.send({"success": false, "errorMessage": error,message});
+    return res.send({"success": false, "errorMessage": error.message});
+  })
+})
+
+app.get('/database', (req, res) => {
+  res.sendFile(static_dir + 'database.html');
+})
+
+app.get('/all_patient_data', (req, res) => {
+  patient.getAllPatientsData()
+  .then(results => {
+    return res.send({"success": true, "results": results});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
   })
 })
 

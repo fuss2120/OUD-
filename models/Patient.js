@@ -14,4 +14,8 @@ export default class Patient {
         const queryString = insertString + valuesString;
         await dbPool.query(queryString);
     }
+
+    static async getAllPatientsData() {
+        return await dbPool.query("SELECT * FROM Patients");
+    }
 }

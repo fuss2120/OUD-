@@ -9,4 +9,8 @@ const createPatientWithFormData = async formData => {
     await patient.insertPatientToTable();
 }
 
-export default { createPatientWithFormData }
+const getAllPatientsData = async () => {
+    return await Patient.getAllPatientsData();
+}
+
+export default { createPatientWithFormData, getAllPatientsData }
