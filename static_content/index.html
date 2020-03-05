@@ -53,7 +53,7 @@
         data: $("#loginForm").serialize(),
         success: function(response) {
           if (response.success)
-            window.location.assign("entry.html");
+            window.location.assign("entry");
           else
             $("#errorMessage").html(response.errorMessage);
         }
