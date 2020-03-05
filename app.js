@@ -5,7 +5,7 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import { initializeDatabasePool } from './models/dbPool';
 import databaseCredentials from './config/database';
-import { login } from './services';
+import { login, patient } from './services';
 
 const app = express()
 dotenv.config();
@@ -42,6 +42,17 @@ app.post('/login', (req, res) => {
   .catch(error => {
     console.log(error.message);
     return res.send({"sucess": false, "errorMessage": error.message});
+  })
+})
+
+app.post('/enter_user', (req, res) => {
+  patient.createPatientWithFormData(req.body)
+  .then(() => {
+    return res.send({"success": true});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error,message});
   })
 })
 
