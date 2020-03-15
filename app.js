@@ -71,5 +71,9 @@ app.get('/all_patient_data', (req, res) => {
   })
 })
 
+app.get('/chat', (req, res) => {
+  res.sendFile(static_dir + 'chat.html');
+})
+
 app.listen(3000);
 console.log('app running on port ', 3000);

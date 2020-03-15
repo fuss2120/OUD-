@@ -106,3 +106,7 @@ input.a_button:hover{
 #patientDataForm {
   margin-left: 5cm;
 }
+
+.msgButton {
+  cursor: pointer;
+}

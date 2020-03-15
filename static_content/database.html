@@ -45,12 +45,19 @@
       }
 
       function patientDataToHtmlRow(patientData) {
+        console.log(patientData);
         var answer = "<tr>";
         answer += "<td>" + patientData['first_name'] + "</td>";
         answer += "<td>" + patientData['last_name'] + "</td>";
         answer += "<td>" + patientData['phone_number'] + "</td>";
-        answer += "<td><input class=msgButton type=button value='Send message'></td>";
+        answer += "<td>";
+        answer += "<form method='GET' action='/chat'>";
+        answer += "<input type='hidden' name='pid' value='" + patientData['pid'] + "'/>";
+        answer += "<input class=msgButton type=submit value='Send message'/>";
+        answer += "</form>";
+        answer += "</td>";
         answer += "<td><a href='user.html'>More info</a></td>";
+        answer += "</form>";
         answer += "</tr>";
         return answer;
       }
