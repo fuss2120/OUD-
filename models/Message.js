@@ -1,4 +1,10 @@
 import { dbPool } from './dbPool';
+import Patient from './Patient';
+import twilio from 'twilio';
+
+const accountSid = 'AC5d9e67f4494b9e0fdf696723be301fd7';
+const authToken = '8ee7d3d7a0d5b04d402db605a80aff1f';
+const twilioClient = twilio(accountSid, authToken);
 
 export default class Message {
     constructor(content, user, pid, fromPatient, timestamp = undefined) {
@@ -7,6 +13,20 @@ export default class Message {
         this.pid = pid;
         this.fromPatient = fromPatient;
         this.timestamp = timestamp;
+    }
+
+    async sendMessage() {
+        await this.sendMessageThroughTwilio();
+        await this.insertMessageIntoTable();
+    }
+
+    async sendMessageThroughTwilio() {
+        const patientPhoneNumber = await Patient.getPatientPhoneNumberFromPid(this.pid);
+        await twilioClient.messages.create({
+            body: this.content,
+            from: '+12064663486',
+            to: "+1" + patientPhoneNumber
+        })
     }
 
     async insertMessageIntoTable() {
