@@ -5,7 +5,7 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import { initializeDatabasePool } from './models/dbPool';
 import databaseCredentials from './config/database';
-import { login, patient } from './services';
+import { login, patient, chat } from './services';
 
 const app = express()
 dotenv.config();
@@ -73,6 +73,20 @@ app.get('/all_patient_data', (req, res) => {
 
 app.get('/chat', (req, res) => {
   res.sendFile(static_dir + 'chat.html');
+})
+
+app.post('/send_message', (req, res) => {
+  const messageText = req.body.message;
+  const user = req.session.user;
+  const pid = req.body.pid;
+  chat.sendMessageFromUserToPid(messageText, user, pid)
+  .then(() => {
+    return res.send({"success": true});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message});
+  })
 })
 
 app.listen(3000);
