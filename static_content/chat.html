@@ -109,6 +109,16 @@
           return date;
         }
 
+        function initializeWebSocket() {
+          var ws = new WebSocket('ws://' + window.location.host);
+          console.log('ws://' + window.location.host);
+          ws.onmessage = function (ev) {
+            var messageData = JSON.parse(ev.data);
+            if (messageData.pid == pid)
+              getAndDisplayPatientMessages();
+          }
+        }
+
         function getPrettyStringForDateObj(dateObj) {
           var daysArr = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
           var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -134,6 +144,7 @@
         $(document).ready(function () {
           displayPatientName();
           getAndDisplayPatientMessages();
+          initializeWebSocket();
         });
 
     </script>

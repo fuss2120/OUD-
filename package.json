@@ -21,7 +21,8 @@
     "express": "^4.16.4",
     "express-session": "^1.17.0",
     "mysql": "^2.18.1",
-    "twilio": "^3.40.0"
+    "twilio": "^3.40.0",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "babel-cli": "6.5.1",

@@ -1,5 +1,6 @@
 import "babel-polyfill";
 import express from 'express';
+import { createServer } from 'http';
 import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
@@ -8,6 +9,8 @@ import databaseCredentials from './config/database';
 import { login, patient, chat } from './services';
 
 const app = express()
+const server = createServer(app);
+chat.initilizeSocketServer(server);
 dotenv.config();
 const NODE_ENV = process.env.NODE_ENV;
 const dbConfig = databaseCredentials[NODE_ENV];
@@ -126,5 +129,5 @@ app.get('/patient_messages', (req, res) => {
   })
 })
 
-app.listen(3000);
+server.listen(3000);
 console.log('app running on port ', 3000);
