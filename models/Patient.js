@@ -35,4 +35,12 @@ export default class Patient {
         const queryResults = await dbPool.query("SELECT pid FROM Patients WHERE phone_number = '" + phoneNumber + "'");
         return queryResults[0]['pid'];
     }
+
+    static async getNameFromPid(pid) {
+        const queryResults = await dbPool.query("SELECT first_name, last_name FROM Patients WHERE pid = " + pid);
+        const firstName = queryResults[0]['first_name'];
+        const lastName = queryResults[0]['last_name'];
+        const fullName = firstName + " " + lastName;
+        return fullName;
+    }
 }

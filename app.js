@@ -102,5 +102,19 @@ app.post('/sms', (req, res) => {
   })
 })
 
+app.get('/patient_name', (req, res) => {
+  const pid = req.query.pid;
+  console.log(req);
+  console.log(pid);
+  patient.getPatientNameFromPid(pid)
+  .then(name => {
+    return res.send({"success": true, "result": name});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
+  })
+})
+
 app.listen(3000);
 console.log('app running on port ', 3000);
