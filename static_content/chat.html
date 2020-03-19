@@ -39,8 +39,74 @@
           })
         }
 
+        function getAndDisplayPatientMessages() {
+          $.get({
+            url: '/patient_messages',
+            data: { "pid": pid },
+            success: function(response) {
+              if (response.success == true)
+                displayPatientMessagesFromJSON(response.results);
+              else
+                console.log(response.errorMessage);
+            }
+          })
+        }
+
+        function displayPatientMessagesFromJSON(messageData) {
+          setMessageTimes(messageData);
+          sortMessagesByTime(messageData);
+          var allMessageHtmlString = "";
+          for (var i = 0; i < messageData.length; i++) {
+            var messageHtmlString = getHtmlForMessageObject(messageData[i]);
+            allMessageHtmlString += messageHtmlString;
+          }
+          $("#chat").html(allMessageHtmlString);
+        }
+        
+        function getHtmlForMessageObject(messageObj) {
+          var answer = "";
+          var classTags = messageObj['from_patient'] ? "'message'" : "'message self'";
+          var timeString = messageObj['time_sent'];
+          answer += "<div class=" + classTags + ">";
+          answer += messageObj['message'];
+          answer += "<p class='smallTime'>" + timeString + "</p>";
+          answer += "</div>";
+          return answer;
+        }
+
+        function setMessageTimes(messageData) {
+          for (var i = 0; i < messageData.length; i++) {
+            var timeString = messageData[i]['time_sent'];
+            var timeObj = convertSqlTimestampToLocalObject(timeString);
+            messageData[i]['time_sent'] = timeObj;
+          }
+        }
+
+        function sortMessagesByTime(messageData) {
+          messageData.sort(function(a, b) {
+            return a['time_sent'] - b['time_sent'];
+          })
+        }
+
+        /**
+         * Takes in MySQL UTC timestamp string
+         * Converts to local time
+         * Returns Javascript Date Object
+         */
+        function convertSqlTimestampToLocalObject(timestamp) {
+          // string modifications
+          timestamp = timestamp.replace("T", " ");
+          timestamp = timestamp.substring(0, timestamp.length - 5);
+          // split into year, month, day, etc
+          var t = timestamp.split(/[- :]/);
+          // create the date objects
+          var date = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+          return date;
+        }
+
         $(document).ready(function () {
           displayPatientName();
+          getAndDisplayPatientMessages();
         });
 
     </script>
@@ -69,7 +135,7 @@
           <div class="message self">
             Hey, man! What's up, Mr Stark? 👋
           </div>
-          <div class="message stark">
+          <div class="message">
             Kid, where'd you come from? 
             <p class="smallTime">12:33 pm</p>
           </div>
@@ -79,7 +145,7 @@
           <div class="message self">
             Uh, what is this guy's problem, Mr. Stark? 🤔
           </div>
-          <div class="message stark">
+          <div class="message">
             Uh, he's from space, he came here to steal a necklace from a wizard.
           </div>
         </div>
