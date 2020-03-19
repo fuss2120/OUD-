@@ -89,5 +89,18 @@ app.post('/send_message', (req, res) => {
   })
 })
 
+app.post('/sms', (req, res) => {
+  const sender = req.body.From;
+  const message = req.body.Body;
+  chat.logMessageFromPhoneNumber(message, sender)
+  .then(() => {
+    return res.send({"success": true});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message});
+  })
+})
+
 app.listen(3000);
 console.log('app running on port ', 3000);

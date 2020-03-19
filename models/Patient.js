@@ -1,5 +1,11 @@
 import { dbPool } from './dbPool';
 
+const trimPhoneNumber = phoneNumber => {
+    if (phoneNumber.length == 12 && phoneNumber[0] == '+')
+        return phoneNumber.substring(2);
+    return phoneNumber;
+}
+
 export default class Patient {
     constructor(firstName, lastName, phoneNumber, comments) {
         this.firstName = firstName;
@@ -22,5 +28,11 @@ export default class Patient {
     static async getPatientPhoneNumberFromPid(pid) {
         const queryResults = await dbPool.query("SELECT phone_number FROM Patients WHERE pid = " + pid);
         return queryResults[0]['phone_number'];
+    }
+
+    static async getPidFromPhoneNumber(phoneNumber) {
+        phoneNumber = trimPhoneNumber(phoneNumber);
+        const queryResults = await dbPool.query("SELECT pid FROM Patients WHERE phone_number = '" + phoneNumber + "'");
+        return queryResults[0]['pid'];
     }
 }

@@ -1,6 +1,6 @@
 create table Texts (
     id                      int NOT NULL AUTO_INCREMENT primary key,
-    user                    varchar(255) NOT NULL,
+    user                    varchar(255),
     pid                     int NOT NULL,
     from_patient            boolean NOT NULL,
     message                 TEXT NOT NULL,
