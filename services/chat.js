@@ -12,4 +12,8 @@ const logMessageFromPhoneNumber = async (messageText, phoneNumber) => {
     await message.insertMessageIntoTable();
 }
 
-export default { sendMessageFromUserToPid, logMessageFromPhoneNumber }
+const getPatientMessagesFromPid = async pid => {
+    return await Message.getMessagesForPid(pid);
+}
+
+export default { sendMessageFromUserToPid, logMessageFromPhoneNumber, getPatientMessagesFromPid }

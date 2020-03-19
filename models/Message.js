@@ -48,4 +48,10 @@ export default class Message {
         const queryString = insertString + valuesString;
         await dbPool.query(queryString);
     }
+
+    static async getMessagesForPid(pid) {
+        const query = "SELECT from_patient, message, time_sent FROM Texts WHERE pid = " + pid;
+        const queryResults = await dbPool.query(query);
+        return queryResults;
+    }
 }

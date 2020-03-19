@@ -104,11 +104,21 @@ app.post('/sms', (req, res) => {
 
 app.get('/patient_name', (req, res) => {
   const pid = req.query.pid;
-  console.log(req);
-  console.log(pid);
   patient.getPatientNameFromPid(pid)
   .then(name => {
     return res.send({"success": true, "result": name});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
+  })
+})
+
+app.get('/patient_messages', (req, res) => {
+  const pid = req.query.pid;
+  chat.getPatientMessagesFromPid(pid)
+  .then(results => {
+    return res.send({"success": true, "results": results});
   })
   .catch(error => {
     console.log(error.message);
