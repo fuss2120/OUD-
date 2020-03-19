@@ -1,8 +1,8 @@
 <html lang="en" dir="ltr">
   <head>
     <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet">
-    <link href="http://mvrhy.x10host.com/OUD/myStyle.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
+    <link rel="stylesheet" type="text/css" href="chat.css" />
     <meta charset="utf-8">
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -15,16 +15,33 @@
           var message = $("#messageTxt").val();
           console.log(message);
           $.post({
-          url: '/send_message',
-          data: { "message": message, "pid": pid },
-          success: function(response) {
-            if (response.success == true)
-              console.log("success");
-            else
-              console.log(response.errorMessage);
-          }
-       })
+            url: '/send_message',
+            data: { "message": message, "pid": pid },
+            success: function(response) {
+              if (response.success == true)
+                console.log("success");
+              else
+                console.log(response.errorMessage);
+            }
+          })
         }
+
+        function displayPatientName() {
+          $.get({
+            url: '/patient_name',
+            data: { "pid": pid },
+            success: function(response) {
+              if (response.success == true)
+                $(".name").html(response.result);
+              else
+                console.log(response.errorMessage);
+            }
+          })
+        }
+
+        $(document).ready(function () {
+          displayPatientName();
+        });
 
     </script>
   </head>
@@ -36,16 +53,44 @@
       <br>
       <a href="/">Logout</a>
     </div>
-    <div id="aligner">
-      <font class=mainFont>
-      Send message:<br>
-      <textarea placeholder="Enter message" id="messageTxt" class="messageTxt" rows="4" cols="20" align=left></textarea>
-      <br><br>
-      <input class=msgButton style="padding: 12px 12px; width:100px;" value="Send" onclick="sendMessage()">
+    
 
-
-
-
+    <div class="center">
+      <div class="chat">
+        <div class="contact bar">
+          <div class="name">
+            Tony Stark
+          </div>
+        </div>
+        <div class="messages" id="chat">
+          <div class="time">
+            Today at 11:41
+          </div>
+          <div class="message self">
+            Hey, man! What's up, Mr Stark? 👋
+          </div>
+          <div class="message stark">
+            Kid, where'd you come from? 
+            <p class="smallTime">12:33 pm</p>
+          </div>
+          <div class="message self">
+            Field trip! 🤣
+          </div>
+          <div class="message self">
+            Uh, what is this guy's problem, Mr. Stark? 🤔
+          </div>
+          <div class="message stark">
+            Uh, he's from space, he came here to steal a necklace from a wizard.
+          </div>
+        </div>
+        <div class="input">
+          <textarea placeholder="Type your message here!" type="text"></textarea>
+          <div class="send">&uarr;</div>
+        </div>
+      </div>
     </div>
+
+
+
   </body>
 </html>
