@@ -66,7 +66,7 @@
         function getHtmlForMessageObject(messageObj) {
           var answer = "";
           var classTags = messageObj['from_patient'] ? "'message'" : "'message self'";
-          var timeString = messageObj['time_sent'];
+          var timeString = getPrettyStringForDateObj(messageObj['time_sent']);
           answer += "<div class=" + classTags + ">";
           answer += messageObj['message'];
           answer += "<p class='smallTime'>" + timeString + "</p>";
@@ -102,6 +102,28 @@
           // create the date objects
           var date = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
           return date;
+        }
+
+        function getPrettyStringForDateObj(dateObj) {
+          var daysArr = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
+          var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          var hour = dateObj.getHours();
+          var minutes = dateObj.getMinutes();
+          var suffix = dateObj.getHours() < 12 ? "am" : "pm";
+          if (isToday(dateObj))
+            return "Today at " + hour + ":" + minutes + suffix;
+          var day = daysArr[dateObj.getDay()];
+          var dayOfMonth = dateObj.getDate();
+          var month = monthArr[dateObj.getMonth()];
+          var year = dateObj.getYear() + 1900;
+          return day + " " + month + " " + dayOfMonth + " " + year + " at " + hour + ":" + minutes + suffix;
+        }
+
+        function isToday(someDate) {
+          const today = new Date();
+          return someDate.getDate() == today.getDate() &&
+            someDate.getMonth() == today.getMonth() &&
+            someDate.getFullYear() == today.getFullYear();
         }
 
         $(document).ready(function () {
