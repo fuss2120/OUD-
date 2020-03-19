@@ -13,13 +13,17 @@
 
         function sendMessage() {
           var message = $("#messageTxt").val();
-          console.log(message);
+          if (message.length == 0)
+            return;
+          $("#messageTxt").val("");
           $.post({
             url: '/send_message',
             data: { "message": message, "pid": pid },
             success: function(response) {
-              if (response.success == true)
+              if (response.success == true) {
                 console.log("success");
+                getAndDisplayPatientMessages();
+              }
               else
                 console.log(response.errorMessage);
             }
@@ -61,6 +65,7 @@
             allMessageHtmlString += messageHtmlString;
           }
           $("#chat").html(allMessageHtmlString);
+          $('#chat').scrollTop($('#chat')[0].scrollHeight);
         }
         
         function getHtmlForMessageObject(messageObj) {
@@ -146,34 +151,12 @@
     <div class="center">
       <div class="chat">
         <div class="contact bar">
-          <div class="name">
-            Tony Stark
-          </div>
+          <div class="name">Loading...</div>
         </div>
-        <div class="messages" id="chat">
-          <div class="time">
-            Today at 11:41
-          </div>
-          <div class="message self">
-            Hey, man! What's up, Mr Stark? 👋
-          </div>
-          <div class="message">
-            Kid, where'd you come from? 
-            <p class="smallTime">12:33 pm</p>
-          </div>
-          <div class="message self">
-            Field trip! 🤣
-          </div>
-          <div class="message self">
-            Uh, what is this guy's problem, Mr. Stark? 🤔
-          </div>
-          <div class="message">
-            Uh, he's from space, he came here to steal a necklace from a wizard.
-          </div>
-        </div>
+        <div class="messages" id="chat"></div>
         <div class="input">
-          <textarea placeholder="Type your message here!" type="text"></textarea>
-          <div class="send">&uarr;</div>
+          <textarea id="messageTxt" placeholder="Type your message here!" type="text"></textarea>
+          <div class="send" onclick="sendMessage()">&uarr;</div>
         </div>
       </div>
     </div>
