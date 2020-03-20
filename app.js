@@ -1,8 +1,21 @@
+import "babel-polyfill";
 import express from 'express';
+import { createServer } from 'http';
 import path from 'path';
 import session from 'express-session';
+import dotenv from 'dotenv';
+import { initializeDatabasePool } from './models/dbPool';
+import databaseCredentials from './config/database';
+import { login, patient, chat } from './services';
 
 const app = express()
+const server = createServer(app);
+chat.initilizeSocketServer(server);
+dotenv.config();
+const NODE_ENV = process.env.NODE_ENV;
+const dbConfig = databaseCredentials[NODE_ENV];
+
+initializeDatabasePool(dbConfig);
 
 const static_dir = path.resolve('static_content') + '/';
 
@@ -24,10 +37,97 @@ app.get('/entry', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-  // TODO : check that user exists in database
-  req.session.userInfo = req.body;
-  res.redirect('/entry');
+  login.logUserInWithFormData(req.body)
+  .then(user => {
+    req.session.user = user;
+    return res.send({"success" : true})
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"sucess": false, "errorMessage": error.message});
+  })
 })
 
-app.listen(3000);
+app.post('/enter_user', (req, res) => {
+  patient.createPatientWithFormData(req.body)
+  .then(() => {
+    return res.send({"success": true});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message});
+  })
+})
+
+app.get('/database', (req, res) => {
+  res.sendFile(static_dir + 'database.html');
+})
+
+app.get('/all_patient_data', (req, res) => {
+  patient.getAllPatientsData()
+  .then(results => {
+    return res.send({"success": true, "results": results});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
+  })
+})
+
+app.get('/chat', (req, res) => {
+  res.sendFile(static_dir + 'chat.html');
+})
+
+app.post('/send_message', (req, res) => {
+  const messageText = req.body.message;
+  const user = req.session.user;
+  const pid = req.body.pid;
+  chat.sendMessageFromUserToPid(messageText, user, pid)
+  .then(() => {
+    return res.send({"success": true});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message});
+  })
+})
+
+app.post('/sms', (req, res) => {
+  const sender = req.body.From;
+  const message = req.body.Body;
+  chat.logMessageFromPhoneNumber(message, sender)
+  .then(() => {
+    return res.send({"success": true});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message});
+  })
+})
+
+app.get('/patient_name', (req, res) => {
+  const pid = req.query.pid;
+  patient.getPatientNameFromPid(pid)
+  .then(name => {
+    return res.send({"success": true, "result": name});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
+  })
+})
+
+app.get('/patient_messages', (req, res) => {
+  const pid = req.query.pid;
+  chat.getPatientMessagesFromPid(pid)
+  .then(results => {
+    return res.send({"success": true, "results": results});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
+  })
+})
+
+server.listen(3000);
 console.log('app running on port ', 3000);
