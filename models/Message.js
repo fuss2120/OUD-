@@ -3,7 +3,7 @@ import Patient from './Patient';
 import twilio from 'twilio';
 
 const accountSid = 'AC5d9e67f4494b9e0fdf696723be301fd7';
-const authToken = '8ee7d3d7a0d5b04d402db605a80aff1f';
+const authToken =  'e9cdf2cbef581153b42d1536fd33a0dd';
 const twilioClient = twilio(accountSid, authToken);
 
 export default class Message {

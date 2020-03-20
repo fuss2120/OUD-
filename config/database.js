@@ -4,6 +4,12 @@ export default {
         user: "scoyne",
         password: "scottpass",
         database: "scotttest"
+    },
+    matt_development: {
+      host: "zardoz.mscs.mu.edu",
+      user: "mverhey",
+      password: "gilg",
+      database: "matttest"
     }
 }
 
