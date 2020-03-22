@@ -22,7 +22,7 @@
     "express-session": "^1.17.0",
     "mysql": "^2.18.1",
     "twilio": "^3.40.0",
-    "ws": "^7.2.3"
+    "ws": "^7.2.3",
     "faker": "^4.1.0",
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
