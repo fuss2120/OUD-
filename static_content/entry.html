@@ -5,11 +5,20 @@
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
     <meta charset="utf-8">
     <title>Data entry</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript">
 
       function userEntered(){
-        alert("User successfully entered");
-        location.reload();
+        $.post({
+          url: '/enter_user',
+          data: $("#patientDataForm").serialize(),
+          success: function(response) {
+            if (response.success == true)
+              window.location.assign("database");
+            else
+              console.log(response.errorMessage);
+          }
+       })
       }
 
 
@@ -17,18 +26,25 @@
     </script>
   </head>
   <body>
+    <div class="sidebar">
+      <a href="entry">Patient entry</a>
+      <br>
+      <a href="database">Database</a>
+      <br>
+      <a href="index">Logout</a>
+    </div>
     <div id="aligner">
 
-      <form>
+      <form id="patientDataForm">
         <font class=mainFont>
           First name<br>
-          <input type=text class="textEntry"><br>
+          <input name="firstName" type=text class="textEntry"><br>
           Last name<br>
-          <input type=text class="textEntry"><br>
+          <input name="lastName" type=text class="textEntry"><br>
           Phone number<br>
-          <input type=text class="textEntry"><font size=3px>  Format: 123-456-7890 </font><br>
+          <input name="phoneNumber" type=text class="textEntry"><font size=3px>  Format: 123-456-7890 </font><br>
           Additional Comments<br>
-          <textarea rows="4" cols="50"></textarea><br>
+          <textarea name="comments" rows="4" cols="50"></textarea><br>
           <input type=button class="a_button" value="Enter data" onclick="userEntered()" >
         </font>
       </form>

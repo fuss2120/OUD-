@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
     <meta charset="utf-8">
     <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript">
 
       function passwordToggle() {
@@ -27,7 +28,7 @@
   <body>
     <div id="aligner">
       <font class=mainFont>
-        <form action="login" method="post">
+        <form id="loginForm" onsubmit="submitLogin(event)">
           Username<br>
           <input name="username" type="text" class="textEntry" ><br>
           Password<br>
@@ -36,7 +37,27 @@
           <input type=checkbox onclick="passwordToggle()"><br>
           <input class="a_button" type=submit value="Login" >
         </form>
+      <p id="errorMessage" color="red"></p>
       </font>
     </div>
   </body>
+  <script type="text/javascript">
+    if (window.location.pathname === "/login") {
+      document.getElementById("errorMessage").innerHTML = "Incorrect Username or Password";
+    }
+
+    function submitLogin(e) {
+      e.preventDefault();
+      $.post({
+        url: '/login',
+        data: $("#loginForm").serialize(),
+        success: function(response) {
+          if (response.success)
+            window.location.assign("entry");
+          else
+            $("#errorMessage").html(response.errorMessage);
+        }
+      })
+    }
+  </script>
 </html>
