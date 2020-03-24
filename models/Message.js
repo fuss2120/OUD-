@@ -2,9 +2,7 @@ import { dbPool } from './dbPool';
 import Patient from './Patient';
 import twilio from 'twilio';
 
-const accountSid = 'AC5d9e67f4494b9e0fdf696723be301fd7';
-const authToken =  'e9cdf2cbef581153b42d1536fd33a0dd';
-const twilioClient = twilio(accountSid, authToken);
+let twilioClient;
 
 export default class Message {
     constructor(content, pid, fromPatient, user = undefined, timestamp = undefined) {
@@ -53,5 +51,11 @@ export default class Message {
         const query = "SELECT from_patient, message, time_sent FROM Texts WHERE pid = " + pid;
         const queryResults = await dbPool.query(query);
         return queryResults;
+    }
+
+    static async initializeTwilio() {
+        const accountSid = process.env.TWILIO_SID;
+        const authToken =  process.env.TWILIO_TOKEN;
+        twilioClient = twilio(accountSid, authToken);
     }
 }
