@@ -11,6 +11,10 @@ Database credentials are set up in `config/database.js` <br/>
 Configuration works by reading environment variables found in `.env` <br/>
 The `.env` file must be set up and have `NODE_ENV=[env name]`
 
+## Twilio Crednetials
+Twilio Account SID and Token are stored as environment variables <br/>
+Variable names should be `TWILIO_SID=...` and `TWILIO_TOKEN=...`
+
 ## Twilio Cli
 The twilio cli is required to recieve messages on a testing environment <br/>
 Instructions can be found here: https://www.twilio.com/docs/sms/quickstart/node#install-nodejs-and-the-twilio-module <br/>
