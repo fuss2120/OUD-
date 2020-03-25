@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-    <!-- <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
     <meta charset="utf-8">
     <title>Login</title>
@@ -28,32 +27,35 @@
       }
 
     </script>
-      <div class = "sidenav">
-          <div class = "login-main-text">
-              <h2>Opioid Use Disorder</h2>
-              <h2> Login Page </h2>
-              <p>Welcome to OUD</p>
-          </div>
+  </head>
+  
+  <body>
+    <div class="sidenav">
+      <div class="login-main-text">
+        <h2>Opioid Use Disorder</h2>
+        <h2>Login Page</h2>
+        <p>Welcome to OUD</p>
       </div>
-      <div class = "main">
-        <div class="col-md-6 col-sm-12">
-          <div class = "login-form">
-            <form id="loginForm" onsubmit="submitLogin(event)">
-              <div class = "form-group">
-                <label>User Name</label>
-                <input type = "text" class = "form-control" placeholder = "User Name">
-              </div>
-              <div class = "form-group">
-                <label>Password</label>
-                <input type = "password" class = "form-control" placeholder = "Password" onclick="passwordToggle()">
-              </div>
-              <button type = "submit" class="btn btn-black">Login</button>
-            </form>
-            <p id="errorMessage" color="red"></p>
-          </div>
+    </div>
+    <div class="main">
+      <div class="col-md-6 col-sm-12">
+        <div class="login-form">
+          <form id="loginForm" onsubmit="submitLogin(event)">
+            <div class="form-group">
+              <label>User Name</label>
+              <input type="text" class="form-control" placeholder="User Name">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control" placeholder="Password" onclick="passwordToggle()">
+            </div>
+            <button type="submit" class="btn btn-black">Login</button>
+          </form>
+          <p id="errorMessage" color="red"></p>
         </div>
       </div>
-  </head>
+    </div>
+  </body>
 
   <script type="text/javascript">
     if (window.location.pathname === "/login") {
