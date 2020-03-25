@@ -5,6 +5,7 @@ import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import { initializeDatabasePool } from './models/dbPool';
+import Message from './models/Message';
 import databaseCredentials from './config/database';
 import { login, patient, chat } from './services';
 
@@ -12,6 +13,7 @@ const app = express()
 const server = createServer(app);
 chat.initilizeSocketServer(server);
 dotenv.config();
+Message.initializeTwilio();
 const NODE_ENV = process.env.NODE_ENV;
 const dbConfig = databaseCredentials[NODE_ENV];
 
