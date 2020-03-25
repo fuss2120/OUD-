@@ -10,6 +10,12 @@ export default {
       user: "mverhey",
       password: "gilg",
       database: "matttest"
+    },
+    fuss_development: {
+        host: "zardoz.mscs.mu.edu",
+        user: "mfuss",
+        password: "fusspass",
+        database: "fusstest"
     }
 }
 

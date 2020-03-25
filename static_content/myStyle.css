@@ -1,104 +1,70 @@
-#aligner{
-  width: 800px;
-  margin: 0 auto;
-}
-table{
-  border: 2px solid;
-}
-td, tr{
-  border: 2px solid;
-  padding: 15px;
-  font-family: 'Alatsi', sans-serif;
 
+body {
+  font-family: "Lato", sans-serif;
 }
-tr.firstRow{
-  background-color: #9dbcd4;
-}
-input.msgButton{
-  background-color: #9dbcd4;
-  border-color: black;
-  font-family: 'Alatsi', sans-serif;
-  padding: 15px 20px;
-  font-size: 32px;
 
+.main-head{
+  height: 150px;
+  background: #FFF;
+ 
 }
-tr:hover{
-  background-color: #9dbcd4;
 
-}
-.sidebar{
-  height: auto;
-  width: 160px;
-  position: fixed;
-  z-index: 1;
-  top: 2;
-  left: 0;
-  background-color: #9dbcd4;
+.sidenav {
+  height: 100%;
+  background-color: #000;
   overflow-x: hidden;
-  padding: 10px;
-  border: 1px solid;
-
+  padding-top: 20px;
 }
 
-.sidebar a{
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 25px;
-  color: black;
-  display: block;
-  font-family: 'Alatsi', sans-serif;
-
-  outline: 2px white;
+.main {
+  padding: 0px 10px;
 }
 
-body{
-  background-color: #acc2d9;
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
 }
 
-input.textEntry{
-  width:200px;
-  height: 20px;
-  border-style: solid;
-  border-width: 2px;
-  font-family: 'Alatsi', sans-serif;
-  font-size:18px;
-  font-weight: 200;
+@media screen and (max-width: 450px) {
+  .login-form{
+      margin-top: 10%;
+  }
+
+  .register-form{
+      margin-top: 10%;
+  }
 }
 
-font.mainFont{
-  font-family: 'Alatsi', sans-serif;
-  font-size: 24px;
-}
-input.a_button{
-  color: #343837;
-  background-color: #d8dcd6;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 16px 32px;
-  margin: 12px 0px;
-  border-color: black;
-  border-width: 1.5px;
-  font-family: 'Righteous', cursive;
+@media screen and (min-width: 768px){
+  .main{
+      margin-left: 40%; 
+  }
 
-}
+  .sidenav{
+      width: 40%;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+  }
 
-input.a_button:hover{
-  border-width: 2px;
-  border-radius: 15px;
-  transition: 1s;
-  color: black;
+  .login-form{
+      margin-top: 60%;
+      margin-left: 20%;
+  }
 }
 
-#errorMessage {
-  color: red;
-  font-size: 12pt;
-  font-weight: normal;
+.login-main-text{
+  margin-top: 30%;
+  margin-left: 30%;
+  padding: 60px;
+  color: #fff;
 }
 
-#patientDataForm {
-  margin-left: 5cm;
+.login-main-text h2{
+  font-weight: 300;
 }
 
-.msgButton {
-  cursor: pointer;
+.btn-black{
+  background-color: #000 !important;
+  color: #fff;
 }
