@@ -6,16 +6,28 @@ export default {
         database: "scotttest"
     },
     matt_development: {
-      host: "zardoz.mscs.mu.edu",
-      user: "mverhey",
-      password: "gilg",
-      database: "matttest"
+        host: "zardoz.mscs.mu.edu",
+        user: "mverhey",
+        password: "gilg",
+        database: "matttest"
+    },
+    nik_development: {
+        host: "zardoz.mscs.mu.edu",
+        user: "nlange",
+        password: "nikpass",
+        database: "niktest"
     },
     fuss_development: {
         host: "zardoz.mscs.mu.edu",
         user: "mfuss",
         password: "fusspass",
         database: "fusstest"
+    },
+    clare_development: {
+        host: "zardoz.mscs.mu.edu",
+        user: "ckenney",
+        password: "clarepass",
+        database: "claretest"
     }
 }
 
