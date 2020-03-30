@@ -1,4 +1,4 @@
-import User from '../models/User';
+import User from '../Model/User';
 
 const logUserInWithFormData = async formData => {
     const username = formData.username;

@@ -4,10 +4,10 @@ import { createServer } from 'http';
 import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import { initializeDatabasePool } from './models/dbPool';
-import Message from './models/Message';
+import { initializeDatabasePool } from './Model/dbPool';
+import Message from './Model/Message';
 import databaseCredentials from './config/database';
-import { login, patient, chat } from './services';
+import { login, patient, chat } from './Controller';
 
 const app = express()
 const server = createServer(app);
@@ -19,10 +19,10 @@ const dbConfig = databaseCredentials[NODE_ENV];
 
 initializeDatabasePool(dbConfig);
 
-const static_dir = path.resolve('static_content') + '/';
+const static_dir = path.resolve('View') + '/';
 
 app.use(express.json())
-app.use(express.static('static_content'));
+app.use(express.static('View'));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({ secret: 'secret hash' }));
 
@@ -31,11 +31,11 @@ app.get('/test', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-  res.sendFile(static_dir + 'index.html');
+  res.sendFile(static_dir + 'Login.html');
 })
 
-app.get('/entry', (req, res) => {
-  res.sendFile(static_dir + 'entry.html');
+app.get('/HomePage', (req, res) => {
+  res.sendFile(static_dir + 'HomePage.html');
 })
 
 app.post('/login', (req, res) => {

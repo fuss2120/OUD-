@@ -11,16 +11,24 @@
   ],
   "scripts": {
     "test": "jest",
-    "build": "babel app.js config/*.js models/*.js services/*.js --out-dir build",
+    "build": "babel app.js config/*.js Models/*.js Services/*.js --out-dir build",
     "start": "node build/app.js",
     "build-start": "npm run build && npm run start"
   },
   "dependencies": {
+    "@popperjs/core": "^2.1.1",
     "babel-polyfill": "^6.26.0",
+    "bootstrap": "^4.4.1",
+    "bootstrap-icons": "^1.0.0-alpha3",
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
     "express-session": "^1.17.0",
+    "faker": "^4.1.0",
+    "jquery": "^3.4.1",
     "mysql": "^2.18.1",
+    "popper": "^1.0.1",
+    "popper.js": "^1.16.1",
+    "selenium-webdriver": "^4.0.0-alpha.5",
     "twilio": "^3.40.0",
     "ws": "^7.2.3"
   },
