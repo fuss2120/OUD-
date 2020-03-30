@@ -34,8 +34,8 @@ app.get('/', (req, res) => {
   res.sendFile(static_dir + 'Login.html');
 })
 
-app.get('/entry', (req, res) => {
-  res.sendFile(static_dir + 'entry.html');
+app.get('/HomePage', (req, res) => {
+  res.sendFile(static_dir + 'HomePage.html');
 })
 
 app.post('/login', (req, res) => {

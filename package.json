@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "jest",
-    "build": "babel app.js config/*.js Model/*.js Controller/*.js --out-dir build",
+    "build": "babel app.js config/*.js Models/*.js Services/*.js --out-dir build",
     "start": "node build/app.js",
     "build-start": "npm run build && npm run start"
   },
@@ -26,6 +26,7 @@
     "faker": "^4.1.0",
     "jquery": "^3.4.1",
     "mysql": "^2.18.1",
+    "popper": "^1.0.1",
     "popper.js": "^1.16.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "twilio": "^3.40.0",
