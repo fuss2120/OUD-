@@ -150,3 +150,19 @@ body {
 .form-container .btn:hover, .open-button:hover {
   opacity: 1;
 }
+
+#aligner{
+  width: 800px;
+  margin: 0 auto;
+}
+
+.table-responsive{
+  margin-top: 8%;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 70%;
+}
+
+.thread-dark{
+  color: #555;
+}

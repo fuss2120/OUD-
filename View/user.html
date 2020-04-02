@@ -15,8 +15,12 @@
     <div class="pos-f-t">
       <div class="collapse" id="navbarToggleExternalContent">
         <div class="bg-dark p-4">
-          <h5 class="text-white h4">Collapsed content</h5>
-          <span class="text-muted">Toggleable via the navbar brand.</span>
+          <form action="/HomePage">
+            <button type="submit" class="btn btn-link navbar-btn navbar-link">Home Page</button>
+          </form>
+          <form action="/Messages">
+            <button type="submit" class="btn btn-link navbar-btn navbar-link">Messages</button>
+          </form>
         </div>
       </div>
       <nav class="navbar navbar-dark bg-dark">
@@ -31,7 +35,7 @@
       <button class="open-button" onclick="openForm()">Open Form</button>
       
       <div class="form-popup" id="myForm">
-        <form action="/action_page.php" class="form-container">
+        <form class="form-container">
           <div class="form-group">
             <label>First Name</label>
             <input name="fName" type="text" class="form-control" placeholder="User Name">
@@ -44,15 +48,80 @@
             <label>Phone Number</label>
             <input name="number" type="text" class="form-control" placeholder="Ex: 815-222-3333">
           </div>
-          <button type="submit" class="btn">Submit</button>
+          <button type="submit" class="btn" onclick="userEntered()">Submit</button>
           <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
         </form>
       </div>
       
-      
+      <div class="table-responsive card">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">First</th> 
+              <th scope="col">Last</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Message</th>
+            </tr>
+          </thead>
+          <tbody id="fillTableWithContent()">
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Optional JavaScript -->
+    <script type="text/javascript">
+      function fillTableWithContent(results) {
+        var allPatientRows = "";
+        for (var i = 0; i < results.length; i++) {
+          addPatientRowWithData(results[i]);
+        }
+      }
+
+      function addPatientRowWithData(patientData) {
+        var patientRowAsHtml = patientDataToHtmlRow(patientData);
+        $("#patientTable tr:last").after(patientRowAsHtml);
+      }
+
+      function patientDataToHtmlRow(patientData) {
+        console.log(patientData);
+        var answer = "<tr>";
+        answer += "<td>" + patientData['first_name'] + "</td>";
+        answer += "<td>" + patientData['last_name'] + "</td>";
+        answer += "<td>" + patientData['phone_number'] + "</td>";
+        answer += "<td>";
+        answer += "<form method='GET' action='/chat'>";
+        answer += "<input type='hidden' name='pid' value='" + patientData['pid'] + "'/>";
+        answer += "<input class=msgButton type=submit value='Send message'/>";
+        return answer;
+      }
+
+      function userEntered(){
+        $.post({
+          url: '/enter_user',
+          data: $("#patientDataForm").serialize(),
+          success: function(response) {
+            if (response.success == true)
+              window.location.assign("database");
+            else
+              console.log(response.errorMessage);
+          }
+       })
+      }
+
+      // get the database
+      $.get({
+        url: "/all_patient_data",
+        success: function(response) {
+          if (response.success)
+            fillTableWithContent(response.results);
+          else
+            console.log(response.errorMessage);
+        }
+      })
+    </script>
+    
     <script>
       function openForm() {
         document.getElementById("myForm").style.display = "block";
@@ -61,47 +130,10 @@
       function closeForm() {
         document.getElementById("myForm").style.display = "none";
       }
-      </script>
+    </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   </body>
-
-
-
-
-
-
-
-
-
-
-
-    <!-- <head>
-    <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet">
-    <link href="http://mvrhy.x10host.com/OUD/myStyle.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="myStyle.css" />
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <div class="sidebar">
-      <a href="HomePage.html">Patient entry</a>
-      <br>
-      <a href="database.html">Database</a>
-      <br>
-      <a href="Login.html">Logout</a>
-    </div>
-    <div id="aligner">
-      <br><br><br>
-      <font class=mainFont>
-      First name:<br><br>
-      Last name: <br><br>
-      Phone: <br><br>
-      <input class=msgButton type=button value="Send Message"><br><br>
-      <a href="database.html">Back to users</a><br>
-    </div>
-
-  </body> -->
 </html>
