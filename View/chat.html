@@ -13,6 +13,149 @@
 
     <title>Messages</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var pid = urlParams.get('pid');
+
+      function sendMessage() {
+        var message = $("#messageTxt").val();
+        if (message.length == 0)
+          return;
+        $("#messageTxt").val("");
+        $.post({
+          url: '/send_message',
+          data: { "message": message, "pid": pid },
+          success: function(response) {
+            if (response.success == true) {
+              console.log("success");
+              getAndDisplayPatientMessages();
+            }
+            else
+              console.log(response.errorMessage);
+          }
+        })
+      }
+
+      function displayPatientName() {
+        $.get({
+          url: '/patient_name',
+          data: { "pid": pid },
+          success: function(response) {
+            if (response.success == true)
+              $(".name").html(response.result);
+            else
+              console.log(response.errorMessage);
+          }
+        })
+      }
+
+      function getAndDisplayPatientMessages() {
+        $.get({
+          url: '/patient_messages',
+          data: { "pid": pid },
+          success: function(response) {
+            if (response.success == true)
+              displayPatientMessagesFromJSON(response.results);
+            else
+              console.log(response.errorMessage);
+          }
+        })
+      }
+
+      function displayPatientMessagesFromJSON(messageData) {
+        setMessageTimes(messageData);
+        sortMessagesByTime(messageData);
+        var allMessageHtmlString = "";
+        for (var i = 0; i < messageData.length; i++) {
+          var messageHtmlString = getHtmlForMessageObject(messageData[i]);
+          allMessageHtmlString += messageHtmlString;
+        }
+        $("#chat").html(allMessageHtmlString);
+        $('#chat').scrollTop($('#chat')[0].scrollHeight);
+      }
+      
+      function getHtmlForMessageObject(messageObj) {
+        var answer = "";
+        var classTags = messageObj['from_patient'] ? "'message'" : "'message self'";
+        var timeString = getPrettyStringForDateObj(messageObj['time_sent']);
+        answer += "<div class=" + classTags + ">";
+        answer += messageObj['message'];
+        answer += "<p class='smallTime'>" + timeString + "</p>";
+        answer += "</div>";
+        return answer;
+      }
+
+      function setMessageTimes(messageData) {
+        for (var i = 0; i < messageData.length; i++) {
+          var timeString = messageData[i]['time_sent'];
+          var timeObj = convertSqlTimestampToLocalObject(timeString);
+          messageData[i]['time_sent'] = timeObj;
+        }
+      }
+
+      function sortMessagesByTime(messageData) {
+        messageData.sort(function(a, b) {
+          return a['time_sent'] - b['time_sent'];
+        })
+      }
+
+      /**
+       * Takes in MySQL UTC timestamp string
+       * Converts to local time
+       * Returns Javascript Date Object
+       */
+      function convertSqlTimestampToLocalObject(timestamp) {
+        // string modifications
+        timestamp = timestamp.replace("T", " ");
+        timestamp = timestamp.substring(0, timestamp.length - 5);
+        // split into year, month, day, etc
+        var t = timestamp.split(/[- :]/);
+        // create the date objects
+        var date = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+        return date;
+      }
+
+      function initializeWebSocket() {
+        var ws = new WebSocket('ws://' + window.location.host);
+        console.log('ws://' + window.location.host);
+        ws.onmessage = function (ev) {
+          var messageData = JSON.parse(ev.data);
+          if (messageData.pid == pid)
+            getAndDisplayPatientMessages();
+        }
+      }
+
+      function getPrettyStringForDateObj(dateObj) {
+        var daysArr = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
+        var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var hour = dateObj.getHours();
+        var minutes = dateObj.getMinutes();
+        var suffix = dateObj.getHours() < 12 ? "am" : "pm";
+        if (isToday(dateObj))
+          return "Today at " + hour + ":" + minutes + suffix;
+        var day = daysArr[dateObj.getDay()];
+        var dayOfMonth = dateObj.getDate();
+        var month = monthArr[dateObj.getMonth()];
+        var year = dateObj.getYear() + 1900;
+        return day + " " + month + " " + dayOfMonth + " " + year + " at " + hour + ":" + minutes + suffix;
+      }
+
+      function isToday(someDate) {
+        const today = new Date();
+        return someDate.getDate() == today.getDate() &&
+          someDate.getMonth() == today.getMonth() &&
+          someDate.getFullYear() == today.getFullYear();
+      }
+
+      $(document).ready(function () {
+        displayPatientName();
+        getAndDisplayPatientMessages();
+        initializeWebSocket();
+      });
+
+    </script>
+
   </head>
   <body>
     <div class="pos-f-t">
@@ -253,8 +396,7 @@
     </div>
 
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   </body>
