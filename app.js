@@ -38,6 +38,14 @@ app.get('/HomePage', (req, res) => {
   res.sendFile(static_dir + 'HomePage.html');
 })
 
+app.get('/chat', (req, res) => {
+  res.sendFile(static_dir + 'chat.html');
+})
+
+app.get('/user', (req, res) => {
+  res.sendFile(static_dir + 'user.html');
+})
+
 app.post('/login', (req, res) => {
   login.logUserInWithFormData(req.body)
   .then(user => {
