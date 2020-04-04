@@ -84,10 +84,6 @@ app.get('/all_patient_data', (req, res) => {
   })
 })
 
-app.get('/chat', (req, res) => {
-  res.sendFile(static_dir + 'chat.html');
-})
-
 app.post('/send_message', (req, res) => {
   const messageText = req.body.message;
   const user = req.session.user;
