@@ -13,10 +13,15 @@
 
     <title>Messages</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="PatientMessageStream.js"></script>
     <script type="text/javascript">
 
       var urlParams = new URLSearchParams(window.location.search);
       var pid = urlParams.get('pid');
+
+      location.hash = '';
+
+      var patientMessageStreams;
 
       function sendMessage() {
         var message = $("#messageTxt").val();
@@ -28,8 +33,7 @@
           data: { "message": message, "pid": pid },
           success: function(response) {
             if (response.success == true) {
-              console.log("success");
-              getAndDisplayPatientMessages();
+              getAndDisplayAllData();
             }
             else
               console.log(response.errorMessage);
@@ -37,83 +41,81 @@
         })
       }
 
-      function displayPatientName() {
+      function getAndDisplayAllData() {
+        patientMessageStreams = [];
         $.get({
-          url: '/patient_name',
-          data: { "pid": pid },
+          url: '/all_patient_data',
           success: function(response) {
-            if (response.success == true)
-              $(".name").html(response.result);
+            if (response.success == true) {
+              for (var i = 0; i < response.results.length; i++) {
+                makeAndSavePatientFromData(response.results[i]);
+              }
+              fetchAllMessages().done(function() {
+                displayAllData();
+              })
+            }
             else
               console.log(response.errorMessage);
           }
         })
       }
 
-      function getAndDisplayPatientMessages() {
-        $.get({
-          url: '/patient_messages',
-          data: { "pid": pid },
-          success: function(response) {
-            if (response.success == true)
-              displayPatientMessagesFromJSON(response.results);
-            else
-              console.log(response.errorMessage);
-          }
+      function makeAndSavePatientFromData(patientData) {
+        var patientMessageStream = new PatientMessageStream(patientData);
+        patientMessageStreams.push(patientMessageStream);
+      }
+
+      function fetchAllMessages() {
+        var requests = [];
+        for (var i = 0; i < patientMessageStreams.length; i++) {
+          requests.push(patientMessageStreams[i].getMessageData());
+        }
+        return $.when.apply($, requests);
+      }
+
+      function displayAllData() {
+        displayPatientsPanel();
+        displayCurrentChatScreen();
+      }
+
+      function displayPatientsPanel() {
+        sortPatientsByRecent();
+        var htmlInject = "";
+        for (var i = 0; i < patientMessageStreams.length; i++) {
+          htmlInject += patientMessageStreams[i].toHtml();
+        }
+        $(".friend-list").html(htmlInject);
+        $(".patient-" + pid).addClass('active bounceInDown');
+        bindPatientClickHandler();
+      }
+
+      function sortPatientsByRecent() {
+        patientMessageStreams.sort(function(a, b) {
+          return b.getLastMessageTimestamp() - a.getLastMessageTimestamp();
         })
       }
 
-      function displayPatientMessagesFromJSON(messageData) {
-        setMessageTimes(messageData);
-        sortMessagesByTime(messageData);
-        var allMessageHtmlString = "";
-        for (var i = 0; i < messageData.length; i++) {
-          var messageHtmlString = getHtmlForMessageObject(messageData[i]);
-          allMessageHtmlString += messageHtmlString;
-        }
-        $("#chat").html(allMessageHtmlString);
-        $('#chat').scrollTop($('#chat')[0].scrollHeight);
-      }
-      
-      function getHtmlForMessageObject(messageObj) {
-        var answer = "";
-        var classTags = messageObj['from_patient'] ? "'message'" : "'message self'";
-        var timeString = getPrettyStringForDateObj(messageObj['time_sent']);
-        answer += "<div class=" + classTags + ">";
-        answer += messageObj['message'];
-        answer += "<p class='smallTime'>" + timeString + "</p>";
-        answer += "</div>";
-        return answer;
+      function displayCurrentChatScreen() {
+        if (pid == undefined)
+          return;
+        var currentPatientStream = getPatientStreamByPid(pid);
+        var htmlInject = currentPatientStream.getChatHtml();
+        $(".chat").html(htmlInject);
       }
 
-      function setMessageTimes(messageData) {
-        for (var i = 0; i < messageData.length; i++) {
-          var timeString = messageData[i]['time_sent'];
-          var timeObj = convertSqlTimestampToLocalObject(timeString);
-          messageData[i]['time_sent'] = timeObj;
+      function getPatientStreamByPid(pid) {
+        for (var i = 0; i < patientMessageStreams.length; i++) {
+          if (patientMessageStreams[i].patientData['pid'] == pid)
+            return patientMessageStreams[i];
         }
       }
 
-      function sortMessagesByTime(messageData) {
-        messageData.sort(function(a, b) {
-          return a['time_sent'] - b['time_sent'];
-        })
-      }
-
-      /**
-       * Takes in MySQL UTC timestamp string
-       * Converts to local time
-       * Returns Javascript Date Object
-       */
-      function convertSqlTimestampToLocalObject(timestamp) {
-        // string modifications
-        timestamp = timestamp.replace("T", " ");
-        timestamp = timestamp.substring(0, timestamp.length - 5);
-        // split into year, month, day, etc
-        var t = timestamp.split(/[- :]/);
-        // create the date objects
-        var date = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        return date;
+      function bindPatientClickHandler() {
+        window.onhashchange = function () {
+          var hashValue = window.location.hash.substring(1);
+          pid = parseInt(hashValue);
+          displayAllData();
+        }
       }
 
       function initializeWebSocket() {
@@ -122,35 +124,12 @@
         ws.onmessage = function (ev) {
           var messageData = JSON.parse(ev.data);
           if (messageData.pid == pid)
-            getAndDisplayPatientMessages();
+            getAndDisplayAllData();
         }
       }
 
-      function getPrettyStringForDateObj(dateObj) {
-        var daysArr = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
-        var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        var hour = dateObj.getHours();
-        var minutes = dateObj.getMinutes();
-        var suffix = dateObj.getHours() < 12 ? "am" : "pm";
-        if (isToday(dateObj))
-          return "Today at " + hour + ":" + minutes + suffix;
-        var day = daysArr[dateObj.getDay()];
-        var dayOfMonth = dateObj.getDate();
-        var month = monthArr[dateObj.getMonth()];
-        var year = dateObj.getYear() + 1900;
-        return day + " " + month + " " + dayOfMonth + " " + year + " at " + hour + ":" + minutes + suffix;
-      }
-
-      function isToday(someDate) {
-        const today = new Date();
-        return someDate.getDate() == today.getDate() &&
-          someDate.getMonth() == today.getMonth() &&
-          someDate.getFullYear() == today.getFullYear();
-      }
-
       $(document).ready(function () {
-        displayPatientName();
-        getAndDisplayPatientMessages();
+        getAndDisplayAllData();
         initializeWebSocket();
       });
 
@@ -186,94 +165,7 @@
                   <!-- =============================================================== -->
                   <!-- member list -->
                   <ul class="friend-list">
-                      <li class="active bounceInDown">
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>John Doe</strong>
-                          </div>
-                          <div class="last-message text-muted">Hello, Are you there?</div>
-                          <small class="time text-muted">Just now</small>
-                          <small class="chat-alert label label-danger">1</small>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Jane Doe</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">5 mins ago</small>
-                        <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                        </a>
-                      </li> 
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>  
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>     
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>        
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_6.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>          
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_5.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>
-                      <li>
-                          <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Jane Doe</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">5 mins ago</small>
-                        <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                        </a>
-                      </li>                 
+
                   </ul>
           </div>
               
@@ -282,111 +174,14 @@
             <div class="col-md-8 bg-white ">
                   <div class="chat-message">
                       <ul class="chat">
-                          <li class="left clearfix">
-                            <span class="chat-img pull-left">
-                              <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">John Doe</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                            <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>
-                          <li class="left clearfix">
-                              <span class="chat-img pull-left">
-                              <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">John Doe</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                              <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>                    
-                          <li class="left clearfix">
-                              <span class="chat-img pull-left">
-                              <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">John Doe</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                              <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                              <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>                    
+                      
                       </ul>
                   </div>
                   <div class="chat-box bg-white">
                     <div class="input-group">
-                      <input class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+                      <input id="messageTxt" class="form-control border no-shadow no-rounded" placeholder="Type your message here">
                       <span class="input-group-btn">
-                        <button class="btn btn-success no-rounded" type="button">Send</button>
+                        <button onclick="sendMessage()" class="btn btn-success no-rounded" type="button">Send</button>
                       </span>
                     </div><!-- /input-group -->	
                   </div>            
