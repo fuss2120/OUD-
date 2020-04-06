@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Alatsi|Righteous&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="myStyle.css" />
+    <meta charset="utf-8">
+    <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+    function passwordToggle() {
+      var password = document.getElementById("password");
+        if (password.type == "password" ){
+          password.type = "text";
+        }
+        else{
+          password.type = "password";
+        }
+      function userEntered(){
+        alert("User successfully entered");
+      }
+    }
+    </script>
+  </head>
+  
+  <body>
+    <div class="sidenav">
+      <div class="login-main-text">
+        <h2>Opioid Use Disorder</h2>
+        <h2>Login Page</h2>
+        <p>Welcome to OUD</p>
+      </div>
+    </div>
+    <div class="main">
+      <div class="col-md-6 col-sm-12">
+        <div class="login-form">
+          <form id="loginForm" onsubmit="submitLogin(event)">
+            <div class="form-group">
+              <label>User Name</label>
+              <input name="username" type="text" class="form-control" placeholder="User Name">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input name="password" type="password" class="form-control" placeholder="Password" >
+            </div>
+            <button type="submit" class="btn btn-black">Login</button>
+          </form>
+          <p id="errorMessage" color="red"></p>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    if (window.location.pathname === "/login") {
+      document.getElementById("errorMessage").innerHTML = "Incorrect Username or Password";
+    }
+
+    function submitLogin(e) {
+      e.preventDefault();
+      $.post({
+        url: '/login',
+        data: $("#loginForm").serialize(),
+        success: function(response) {
+          if (response.success)
+            window.location.assign("HomePage");
+          else
+            $("#errorMessage").html(response.errorMessage);
+        }
+      })
+    }
+  </script>
+</html>

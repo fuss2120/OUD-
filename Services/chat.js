@@ -1,5 +1,5 @@
-import Message from '../models/Message';
-import Patient from '../models/Patient';
+import Message from '../Models/Message';
+import Patient from '../Models/Patient';
 import { Server } from 'ws';
 
 /**

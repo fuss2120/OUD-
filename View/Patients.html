@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="myStyle.css" />
+
+    <title>Patients</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="pos-f-t">
+      <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+          <form action="/HomePage">
+            <button type="submit" class="btn btn-link navbar-btn navbar-link">Home Page</button>
+          </form>
+          <form action="/Messages">
+            <button type="submit" class="btn btn-link navbar-btn navbar-link">Messages</button>
+          </form>
+        </div>
+      </div>
+      <nav class="navbar navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="true" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <form action="/logout" method="post">
+          <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+        </form>
+      </nav>
+      
+      <button class="open-button" onclick="openForm()">Open Form</button>
+      
+      <div class="form-popup" id="myForm">
+        <form id="patientDataForm" class="form-container">
+          <div class="form-group">
+            <label>First Name</label>
+            <input name="firstName" type="text" class="form-control" placeholder="User Name">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input name="lastName" type="text" class="form-control" placeholder="Password" >
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input name="phoneNumber" type="text" class="form-control" placeholder="Ex: 8152223333">
+          </div>
+          <div class="form-group">
+            <label>Patient Category</label>
+            <select name="pCategory" type="text" class="form-control" >
+              <option value="category1">Category 1</option>
+              <option value="category2">Category 2</option>
+              <option value="category3">Category 3</option>
+              <option value="category4">Category 4</option>
+            </select>
+          </div>
+          <button type="button" class="btn" onclick="userEntered()">Submit</button>
+          <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        </form>
+      </div>
+      
+      <div class="table-responsive card">
+        <table id="patientTable" class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">First</th> 
+              <th scope="col">Last</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Category</th>
+              <th scope="col">Message</th>
+            </tr>
+          </thead>
+          <tbody id="fillTableWithContent()">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <script type="text/javascript">
+      function fillTableWithContent(results) {
+        var allPatientRows = "";
+        for (var i = 0; i < results.length; i++) {
+          addPatientRowWithData(results[i]);
+        }
+      }
+
+      function addPatientRowWithData(patientData) {
+        var patientRowAsHtml = patientDataToHtmlRow(patientData);
+        $("#patientTable tr:last").after(patientRowAsHtml);
+      }
+
+      function patientDataToHtmlRow(patientData) {
+        console.log(patientData);
+        var answer = "<tr>";
+        answer += "<td>" + patientData['first_name'] + "</td>";
+        answer += "<td>" + patientData['last_name'] + "</td>";
+        answer += "<td>" + patientData['phone_number'] + "</td>";
+        answer += "<td>";
+        answer += "<form method='GET' action='/chat'>";
+        answer += "<input type='hidden' name='pid' value='" + patientData['pid'] + "'/>";
+        answer += "<input class=msgButton type=submit value='Send message'/>";
+        return answer;
+      }
+
+      function userEntered(){
+        $.post({
+          url: '/enter_user',
+          data: $("#patientDataForm").serialize(),
+          success: function(response) {
+            if (response.success == true)
+              window.location.assign("user");
+            else
+              console.log(response.errorMessage);
+          }
+       })
+      }
+
+      // get the database
+      $.get({
+        url: "/all_patient_data",
+        success: function(response) {
+          if (response.success)
+            fillTableWithContent(response.results);
+          else
+            console.log(response.errorMessage);
+        }
+      })
+    </script>
+    
+    <script>
+      function openForm() {
+        document.getElementById("myForm").style.display = "block";
+      }
+      
+      function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+      }
+    </script>
+    <!-- then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>
