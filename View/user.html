@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="myStyle.css" />
 
-    <title>Home Page</title>
+    <title>Patients</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
     <div class="pos-f-t">
@@ -35,29 +36,28 @@
       <button class="open-button" onclick="openForm()">Open Form</button>
       
       <div class="form-popup" id="myForm">
-        <form class="form-container">
+        <form id="patientDataForm" class="form-container">
           <div class="form-group">
             <label>First Name</label>
-            <input name="fName" type="text" class="form-control" placeholder="User Name">
+            <input name="firstName" type="text" class="form-control" placeholder="User Name">
           </div>
           <div class="form-group">
             <label>Last Name</label>
-            <input name="lName" type="text" class="form-control" placeholder="Password" >
+            <input name="lastName" type="text" class="form-control" placeholder="Password" >
           </div>
           <div class="form-group">
             <label>Phone Number</label>
-            <input name="number" type="text" class="form-control" placeholder="Ex: 815-222-3333">
+            <input name="phoneNumber" type="text" class="form-control" placeholder="Ex: 8152223333">
           </div>
-          <button type="submit" class="btn" onclick="userEntered()">Submit</button>
+          <button type="button" class="btn" onclick="userEntered()">Submit</button>
           <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
         </form>
       </div>
       
       <div class="table-responsive card">
-        <table class="table">
+        <table id="patientTable" class="table">
           <thead class="thead-dark">
             <tr>
-              <th scope="col">#</th>
               <th scope="col">First</th> 
               <th scope="col">Last</th>
               <th scope="col">Phone</th>
@@ -103,7 +103,7 @@
           data: $("#patientDataForm").serialize(),
           success: function(response) {
             if (response.success == true)
-              window.location.assign("database");
+              window.location.assign("user");
             else
               console.log(response.errorMessage);
           }
@@ -131,8 +131,7 @@
         document.getElementById("myForm").style.display = "none";
       }
     </script>
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- then Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   </body>

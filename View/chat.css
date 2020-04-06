@@ -102,7 +102,7 @@ img {
 }
 
 .chat li.left .chat-body {
-  margin-left: 70px;
+  margin-right: 70px;
   background-color: #fff;
 }
 
@@ -166,7 +166,7 @@ img {
 }
 
 .chat li.right .chat-body {
-  margin-right: 70px;
+  margin-left: 70px;
   background-color: #fff;
 }
 

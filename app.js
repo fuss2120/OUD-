@@ -4,10 +4,10 @@ import { createServer } from 'http';
 import path from 'path';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import { initializeDatabasePool } from './Model/dbPool';
-import Message from './Model/Message';
+import { initializeDatabasePool } from './Models/dbPool';
+import Message from './Models/Message';
 import databaseCredentials from './config/database';
-import { login, patient, chat } from './Controller';
+import { login, patient, chat } from './Services';
 
 const app = express()
 const server = createServer(app);
@@ -36,6 +36,14 @@ app.get('/', (req, res) => {
 
 app.get('/HomePage', (req, res) => {
   res.sendFile(static_dir + 'HomePage.html');
+})
+
+app.get('/chat', (req, res) => {
+  res.sendFile(static_dir + 'chat.html');
+})
+
+app.get('/user', (req, res) => {
+  res.sendFile(static_dir + 'user.html');
 })
 
 app.post('/login', (req, res) => {
@@ -74,10 +82,6 @@ app.get('/all_patient_data', (req, res) => {
     console.log(error.message);
     return res.send({"success": false, "errorMessage": error.message})
   })
-})
-
-app.get('/chat', (req, res) => {
-  res.sendFile(static_dir + 'chat.html');
 })
 
 app.post('/send_message', (req, res) => {

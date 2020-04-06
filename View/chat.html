@@ -11,7 +11,130 @@
     <link rel="stylesheet" type="text/css" href="chat.css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <title>Home Page</title>
+    <title>Messages</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="PatientMessageStream.js"></script>
+    <script type="text/javascript">
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var pid = urlParams.get('pid');
+
+      location.hash = '';
+
+      var patientMessageStreams;
+
+      function sendMessage() {
+        var message = $("#messageTxt").val();
+        if (message.length == 0)
+          return;
+        $("#messageTxt").val("");
+        $.post({
+          url: '/send_message',
+          data: { "message": message, "pid": pid },
+          success: function(response) {
+            if (response.success == true) {
+              getAndDisplayAllData();
+            }
+            else
+              console.log(response.errorMessage);
+          }
+        })
+      }
+
+      function getAndDisplayAllData() {
+        patientMessageStreams = [];
+        $.get({
+          url: '/all_patient_data',
+          success: function(response) {
+            if (response.success == true) {
+              for (var i = 0; i < response.results.length; i++) {
+                makeAndSavePatientFromData(response.results[i]);
+              }
+              fetchAllMessages().done(function() {
+                displayAllData();
+              })
+            }
+            else
+              console.log(response.errorMessage);
+          }
+        })
+      }
+
+      function makeAndSavePatientFromData(patientData) {
+        var patientMessageStream = new PatientMessageStream(patientData);
+        patientMessageStreams.push(patientMessageStream);
+      }
+
+      function fetchAllMessages() {
+        var requests = [];
+        for (var i = 0; i < patientMessageStreams.length; i++) {
+          requests.push(patientMessageStreams[i].getMessageData());
+        }
+        return $.when.apply($, requests);
+      }
+
+      function displayAllData() {
+        displayPatientsPanel();
+        displayCurrentChatScreen();
+      }
+
+      function displayPatientsPanel() {
+        sortPatientsByRecent();
+        var htmlInject = "";
+        for (var i = 0; i < patientMessageStreams.length; i++) {
+          htmlInject += patientMessageStreams[i].toHtml();
+        }
+        $(".friend-list").html(htmlInject);
+        $(".patient-" + pid).addClass('active bounceInDown');
+        bindPatientClickHandler();
+      }
+
+      function sortPatientsByRecent() {
+        patientMessageStreams.sort(function(a, b) {
+          return b.getLastMessageTimestamp() - a.getLastMessageTimestamp();
+        })
+      }
+
+      function displayCurrentChatScreen() {
+        if (pid == undefined)
+          return;
+        var currentPatientStream = getPatientStreamByPid(pid);
+        var htmlInject = currentPatientStream.getChatHtml();
+        $(".chat").html(htmlInject);
+      }
+
+      function getPatientStreamByPid(pid) {
+        for (var i = 0; i < patientMessageStreams.length; i++) {
+          if (patientMessageStreams[i].patientData['pid'] == pid)
+            return patientMessageStreams[i];
+        }
+      }
+
+      function bindPatientClickHandler() {
+        window.onhashchange = function () {
+          var hashValue = window.location.hash.substring(1);
+          pid = parseInt(hashValue);
+          displayAllData();
+        }
+      }
+
+      function initializeWebSocket() {
+        var ws = new WebSocket('ws://' + window.location.host);
+        console.log('ws://' + window.location.host);
+        ws.onmessage = function (ev) {
+          var messageData = JSON.parse(ev.data);
+          if (messageData.pid == pid)
+            getAndDisplayAllData();
+        }
+      }
+
+      $(document).ready(function () {
+        getAndDisplayAllData();
+        initializeWebSocket();
+      });
+
+    </script>
+
   </head>
   <body>
     <div class="pos-f-t">
@@ -42,94 +165,7 @@
                   <!-- =============================================================== -->
                   <!-- member list -->
                   <ul class="friend-list">
-                      <li class="active bounceInDown">
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>John Doe</strong>
-                          </div>
-                          <div class="last-message text-muted">Hello, Are you there?</div>
-                          <small class="time text-muted">Just now</small>
-                          <small class="chat-alert label label-danger">1</small>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Jane Doe</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">5 mins ago</small>
-                        <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                        </a>
-                      </li> 
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>  
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>     
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>        
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_6.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>          
-                      <li>
-                        <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_5.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Kate</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">Yesterday</small>
-                          <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                        </a>
-                      </li>
-                      <li>
-                          <a href="#" class="clearfix">
-                          <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                          <div class="friend-name">	
-                            <strong>Jane Doe</strong>
-                          </div>
-                          <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                          <small class="time text-muted">5 mins ago</small>
-                        <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                        </a>
-                      </li>                 
+
                   </ul>
           </div>
               
@@ -138,111 +174,14 @@
             <div class="col-md-8 bg-white ">
                   <div class="chat-message">
                       <ul class="chat">
-                          <li class="left clearfix">
-                            <span class="chat-img pull-left">
-                              <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">John Doe</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                            <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>
-                          <li class="left clearfix">
-                              <span class="chat-img pull-left">
-                              <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">John Doe</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                              <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>                    
-                          <li class="left clearfix">
-                              <span class="chat-img pull-left">
-                              <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">John Doe</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                              <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                              <span class="chat-img pull-right">
-                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                            </span>
-                            <div class="chat-body clearfix">
-                              <div class="header">
-                                <strong class="primary-font">Sarah</strong>
-                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                              </p>
-                            </div>
-                          </li>                    
+                      
                       </ul>
                   </div>
                   <div class="chat-box bg-white">
                     <div class="input-group">
-                      <input class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+                      <input id="messageTxt" class="form-control border no-shadow no-rounded" placeholder="Type your message here">
                       <span class="input-group-btn">
-                        <button class="btn btn-success no-rounded" type="button">Send</button>
+                        <button onclick="sendMessage()" class="btn btn-success no-rounded" type="button">Send</button>
                       </span>
                     </div><!-- /input-group -->	
                   </div>            
@@ -252,8 +191,7 @@
     </div>
 
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   </body>

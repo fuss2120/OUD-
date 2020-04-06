@@ -1,4 +1,4 @@
-import Patient from '../Model/Patient';
+import Patient from '../Models/Patient';
 
 const createPatientWithFormData = async formData => {
     const firstName = formData.firstName;
