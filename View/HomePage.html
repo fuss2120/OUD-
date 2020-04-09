@@ -13,23 +13,22 @@
   </head>
   <body>
     <div class="pos-f-t">
-      <div class="collapse" id="navbarToggleExternalContent">
-        <div class="bg-dark p-4">
-          <h5 class="text-white h4">Collapsed content</h5>
-          <span class="text-muted">Toggleable via the navbar brand.</span>
-        </div>
-      </div>
-      <nav class="navbar navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="true" aria-label="Toggle navigation">
+      <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <form action="/Login" method="post">
-          <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
-        </form>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/HomePage" tabindex="-1" aria-disabled="true">Home Page<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="/Message">Message</a>
+            <a class="nav-item nav-link" href="/Patients">Patients</a>
+          </div>
+        </div>
       </nav>
 
       <div class="user-name">
-        <h1>Welcome 'Users Name'</h1>
+        <h1>Welcome to OUD!</h1>
       </div>
       
       <div class="card-body2">
@@ -43,7 +42,7 @@
               <h4 class="card-title">Patients and Users</h4>
               <p class="card-text">Want to add users or see who is in the system? Click below!
               </p>
-              <a href="Patients.html" class="btn btn-black">Patients/ Users</a>
+              <a href="/Patients" class="btn btn-black">Patients</a>
             </div>
           </div>
           <div class="card">
@@ -53,7 +52,7 @@
               </svg><br><br>
               <h4 class="card-title">Message Patients</h4>
               <p class="card-text">To get in contact with a patient, click below!</p>
-              <a href="Message.html" class="btn btn-black">Messages</a>
+              <a href="/Message" class="btn btn-black">Messages</a>
             </div>
           </div>
         </div>

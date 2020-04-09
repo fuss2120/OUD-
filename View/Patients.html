@@ -14,26 +14,21 @@
   </head>
   <body>
     <div class="pos-f-t">
-      <div class="collapse" id="navbarToggleExternalContent">
-        <div class="bg-dark p-4">
-          <form action="/HomePage">
-            <button type="submit" class="btn btn-link navbar-btn navbar-link">Home Page</button>
-          </form>
-          <form action="/Messages">
-            <button type="submit" class="btn btn-link navbar-btn navbar-link">Messages</button>
-          </form>
-        </div>
-      </div>
-      <nav class="navbar navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="true" aria-label="Toggle navigation">
+      <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <form action="/logout" method="post">
-          <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
-        </form>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/HomePage">Home Page</a>
+            <a class="nav-item nav-link" href="/Message">Message</a>
+            <a class="nav-item nav-link disabled" href="/Patients" tabindex="-1" aria-disabled="true">Patients<span class="sr-only">(current)</span></a>
+          </div>
+        </div>
       </nav>
       
-      <button class="open-button" onclick="openForm()">Open Form</button>
+      <button class="open-button" onclick="addPatient()">Add Patient</button>
       
       <div class="form-popup" id="myForm">
         <form id="patientDataForm" class="form-container">
@@ -100,8 +95,9 @@
         answer += "<td>" + patientData['first_name'] + "</td>";
         answer += "<td>" + patientData['last_name'] + "</td>";
         answer += "<td>" + patientData['phone_number'] + "</td>";
+        answer += "<td>" + patientData['category_id'] + "</td>";
         answer += "<td>";
-        answer += "<form method='GET' action='/chat'>";
+        answer += "<form method='GET' action='/Message'>";
         answer += "<input type='hidden' name='pid' value='" + patientData['pid'] + "'/>";
         answer += "<input class=msgButton type=submit value='Send message'/>";
         return answer;
@@ -133,7 +129,7 @@
     </script>
     
     <script>
-      function openForm() {
+      function addPatient() {
         document.getElementById("myForm").style.display = "block";
       }
       
