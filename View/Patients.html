@@ -109,7 +109,7 @@
           data: $("#patientDataForm").serialize(),
           success: function(response) {
             if (response.success == true)
-              window.location.assign("user");
+              window.location.assign("Patients");
             else
               console.log(response.errorMessage);
           }
