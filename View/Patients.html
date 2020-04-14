@@ -91,11 +91,12 @@
 
       function patientDataToHtmlRow(patientData) {
         console.log(patientData);
+        var category = patientData['category'] ? patientData['category'] : "<small><i>No Category</i></small>";
         var answer = "<tr>";
         answer += "<td>" + patientData['first_name'] + "</td>";
         answer += "<td>" + patientData['last_name'] + "</td>";
         answer += "<td>" + patientData['phone_number'] + "</td>";
-        answer += "<td>" + patientData['category_id'] + "</td>";
+        answer += "<td>" + category + "</td>";
         answer += "<td>";
         answer += "<form method='GET' action='/Message'>";
         answer += "<input type='hidden' name='pid' value='" + patientData['pid'] + "'/>";

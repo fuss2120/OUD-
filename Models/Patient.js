@@ -23,7 +23,8 @@ export default class Patient {
     }
 
     static async getAllPatientsData() {
-        return await dbPool.query("SELECT * FROM Patients");
+        const queryString = "SELECT p.*, c.category FROM Patients p LEFT JOIN Patient_Categories c ON p.category_id = c.id";
+        return await dbPool.query(queryString);
     }
 
     static async getPatientPhoneNumberFromPid(pid) {
