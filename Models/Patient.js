@@ -7,16 +7,17 @@ const trimPhoneNumber = phoneNumber => {
 }
 
 export default class Patient {
-    constructor(firstName, lastName, phoneNumber, comments) {
+    constructor(firstName, lastName, phoneNumber, categoryId, comments) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.categoryId = categoryId;
         this.comments = comments;
     }
 
     async insertPatientToTable() {
-        const insertString = "INSERT INTO Patients (first_name, last_name, phone_number, additional_comments) ";
-        const valuesString = "VALUES ('" + this.firstName + "', '" + this.lastName + "', '" + this.phoneNumber + "', '" + this.comments + "')"
+        const insertString = "INSERT INTO Patients (first_name, last_name, phone_number, category_id, additional_comments) ";
+        const valuesString = "VALUES ('" + this.firstName + "', '" + this.lastName + "', '" + this.phoneNumber + "', '" + this.categoryId + "', '" + this.comments + "')"
         const queryString = insertString + valuesString;
         await dbPool.query(queryString);
     }
@@ -42,5 +43,10 @@ export default class Patient {
         const lastName = queryResults[0]['last_name'];
         const fullName = firstName + " " + lastName;
         return fullName;
+    }
+
+    static async getCategoryList() {
+        const queryResults = await dbPool.query("SELECT * FROM Patient_Categories");
+        return queryResults;
     }
 }

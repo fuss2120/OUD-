@@ -135,5 +135,16 @@ app.get('/patient_messages', (req, res) => {
   })
 })
 
+app.get('/category_list', (req, res) => {
+  patient.getPatientCategoryList()
+  .then(results => {
+    return res.send({"success": true, "results": results});
+  })
+  .catch(error => {
+    console.log(error.message);
+    return res.send({"success": false, "errorMessage": error.message})
+  })
+})
+
 server.listen(3000);
 console.log('app running on port ', 3000);
