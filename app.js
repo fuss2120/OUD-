@@ -146,5 +146,9 @@ app.get('/category_list', (req, res) => {
   })
 })
 
+app.get('/mass_text', (req, res) => {
+  res.sendFile(static_dir + 'MassText.html');
+})
+
 server.listen(3000);
 console.log('app running on port ', 3000);

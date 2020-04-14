@@ -32,6 +32,7 @@
       </nav>
       
       <button class="open-button" onclick="addPatient()">Add Patient</button>
+      <button class="big-button" onclick="window.location.href = '/mass_text'">Mass Category Text</button>
       
       <div class="form-popup" id="myForm">
         <form id="patientDataForm" class="form-container">
@@ -58,7 +59,7 @@
         </form>
       </div>
       
-      <div class="table-responsive card">
+      <div id="patient-table-card" class="table-responsive card">
         <table id="patientTable" class="table">
           <thead class="thead-dark">
             <tr>
