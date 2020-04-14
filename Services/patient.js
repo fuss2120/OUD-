@@ -4,8 +4,9 @@ const createPatientWithFormData = async formData => {
     const firstName = formData.firstName;
     const lastName = formData.lastName;
     const phoneNumber = formData.phoneNumber;
+    const pCategory = formData.pCategory;
     const comments = formData.comments;
-    let patient = new Patient(firstName, lastName, phoneNumber, comments);
+    let patient = new Patient(firstName, lastName, phoneNumber, pCategory, comments);
     await patient.insertPatientToTable();
 }
 

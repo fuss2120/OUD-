@@ -38,12 +38,12 @@ app.get('/HomePage', (req, res) => {
   res.sendFile(static_dir + 'HomePage.html');
 })
 
-app.get('/chat', (req, res) => {
-  res.sendFile(static_dir + 'chat.html');
+app.get('/Message', (req, res) => {
+  res.sendFile(static_dir + 'Message.html');
 })
 
-app.get('/user', (req, res) => {
-  res.sendFile(static_dir + 'user.html');
+app.get('/Patients', (req, res) => {
+  res.sendFile(static_dir + 'Patients.html');
 })
 
 app.post('/login', (req, res) => {

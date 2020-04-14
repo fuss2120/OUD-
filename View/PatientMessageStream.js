@@ -88,12 +88,19 @@ function PatientMessageStream(patientData) {
     this.toHtml = function() {
         var answer = "";
         var className = "patient patient-" + this.patientData['pid'];
-        answer += "<li class='" + className + "'>";
+        answer += "<div class='chat_list'>";
+        answer += "<div class='chat_people'>";
         answer += "<a href='#" + this.patientData['pid'] + "' class='clearfix'>";
-        answer += "<img src='https://bootdey.com/img/Content/user_1.jpg' alt='' class='img-circle'>";
-        answer += "<div class='friend-name'>";
-        answer += "<strong>" + displayName + "</strong>";
-        answer += "</div></a></li>";
+        answer += "<div class='chat_img'>";
+        answer += "<svg class='bi bi-people-circle' width='2em' height='2em' viewBox='0 0 16 16' fill='black' xmlns='http://www.w3.org/2000/svg'>";
+        answer += "<path d='M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 008 15a6.987 6.987 0 005.468-2.63z'/>";
+        answer += "<path fill-rule='evenodd' d='M8 9a3 3 0 100-6 3 3 0 000 6z' clip-rule='evenodd'/>";
+        answer += "<path fill-rule='evenodd' d='M8 1a7 7 0 100 14A7 7 0 008 1zM0 8a8 8 0 1116 0A8 8 0 010 8z' clip-rule='evenodd'/>";
+        answer += "</svg> </div>";
+        answer += "<div class='chat_ib'>";
+        answer += "<h5>" + displayName + "</h5>";
+        answer += "</div></a></div></div>";
+
         return answer;
     }
 
@@ -111,19 +118,24 @@ function PatientMessageStream(patientData) {
     this.getMessageAsHtml = function(message) {
         var answer = "";
 
-        var listClass = message['from_patient'] ? "message left clearfix" : "message right clearfix";
+        var listClass = message['from_patient'] ? "incoming_msg" : "outgoing_msg";
         var fromName = message['from_patient'] ? displayName : "Me";
         var prettyDate = getPrettyStringForDateObj(message['time_sent']);
         var messageContent = message['message'];
 
-        answer += "<li class='" + listClass + "'>";
-        answer += "<div class='chat-body clearfix'>";
-        answer += "<div class='header'>";
-        answer += "<strong class='primary-font'>" + fromName + "</strong>";
-        answer += "<small class='pull-right text-muted'>" + prettyDate + "</small>";
+        answer += "<div class='"+ listClass + "'>";
+        if(fromName = "Me"){
+            answer += "<div class='sent_msg'>";
+            answer += "<p>" + messageContent + "</p>";
+            answer += "<span class='time_date'>" + prettyDate + "</span> </div>";
+        }else{
+            answer += "<div class='received_msg'>";
+            answer += "<div class='received_withd_msg'></div>"
+            answer += "<p>" + messageContent + "</p>";
+            answer += "<span class='time_date'>" + prettyDate + "</span> </div></div>";
+        }
         answer += "</div>";
-        answer += "<p>" + messageContent + "</p>";
-        answer += "</div></li>";
+
         return answer;
     }
 
