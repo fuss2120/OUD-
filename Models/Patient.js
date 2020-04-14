@@ -50,4 +50,10 @@ export default class Patient {
         const queryResults = await dbPool.query("SELECT * FROM Patient_Categories");
         return queryResults;
     }
+
+    static async getPatientIdsInCategory(categoryId) {
+        const queryResults = await dbPool.query("SELECT pid FROM Patients WHERE category_id = " + categoryId);
+        let pids = queryResults.map(result => result.pid);
+        return pids;
+    }
 }

@@ -33,4 +33,16 @@ const getPatientMessagesFromPid = async pid => {
     return await Message.getMessagesForPid(pid);
 }
 
-export default { sendMessageFromUserToPid, logMessageFromPhoneNumber, getPatientMessagesFromPid, initilizeSocketServer }
+const sendTextToCategoryIdFromUser = async (message, categoryId, user) => {
+    const patientIdsInCategory = await Patient.getPatientIdsInCategory(categoryId);
+    for (let pid of patientIdsInCategory)
+        sendMessageFromUserToPid(message, user, pid);
+}
+
+export default {
+    sendMessageFromUserToPid,
+    logMessageFromPhoneNumber,
+    getPatientMessagesFromPid,
+    initilizeSocketServer,
+    sendTextToCategoryIdFromUser
+}
