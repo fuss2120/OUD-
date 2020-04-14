@@ -108,6 +108,7 @@ body {
   right: 320px;
   border: none;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 #patient-table-card {
