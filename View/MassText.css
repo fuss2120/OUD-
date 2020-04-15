@@ -1,0 +1,22 @@
+.mass-text-form {
+    width: 8cm;
+    margin: 2cm 2cm;
+}
+
+.mass-text-form > textarea {
+    width: 100%;
+    height: 3cm;
+    margin-top: 12px;
+    resize: none;
+    border: 1pt solid #212529;
+    border-radius: 2pt;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    width: 100%;
+    opacity: 0.8;
+}

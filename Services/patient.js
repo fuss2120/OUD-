@@ -18,4 +18,13 @@ const getPatientNameFromPid = async pid => {
     return await Patient.getNameFromPid(pid);
 }
 
-export default { createPatientWithFormData, getAllPatientsData, getPatientNameFromPid }
+const getPatientCategoryList = async () => {
+    return await Patient.getCategoryList();
+}
+
+export default {
+    createPatientWithFormData,
+    getAllPatientsData,
+    getPatientNameFromPid,
+    getPatientCategoryList
+}
