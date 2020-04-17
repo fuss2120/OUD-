@@ -88,7 +88,7 @@ function PatientMessageStream(patientData) {
     this.toHtml = function() {
         var answer = "";
         var className = "patient patient-" + this.patientData['pid'];
-        answer += "<div class='chat_list'>";
+        answer += "<div class='chat_list " + className + "'>";
         answer += "<div class='chat_people'>";
         answer += "<a href='#" + this.patientData['pid'] + "' class='clearfix'>";
         answer += "<div class='chat_img'>";
@@ -124,13 +124,12 @@ function PatientMessageStream(patientData) {
         var messageContent = message['message'];
 
         answer += "<div class='"+ listClass + "'>";
-        if(fromName = "Me"){
+        if(fromName == "Me"){
             answer += "<div class='sent_msg'>";
             answer += "<p>" + messageContent + "</p>";
             answer += "<span class='time_date'>" + prettyDate + "</span> </div>";
         }else{
-            answer += "<div class='received_msg'>";
-            answer += "<div class='received_withd_msg'></div>"
+            answer += "<div class='received_withd_msg'>"
             answer += "<p>" + messageContent + "</p>";
             answer += "<span class='time_date'>" + prettyDate + "</span> </div></div>";
         }
