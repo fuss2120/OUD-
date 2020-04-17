@@ -61,6 +61,8 @@ img{ max-width:100%;}
 
 .active_chat{ background:#ebebeb;}
 
+.incoming_msg{ overflow:hidden; margin:26px 0 26px;}
+
 .incoming_msg_img {
   display: inline-block;
   width: 6%;
