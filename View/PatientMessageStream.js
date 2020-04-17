@@ -124,13 +124,12 @@ function PatientMessageStream(patientData) {
         var messageContent = message['message'];
 
         answer += "<div class='"+ listClass + "'>";
-        if(fromName = "Me"){
+        if(fromName == "Me"){
             answer += "<div class='sent_msg'>";
             answer += "<p>" + messageContent + "</p>";
             answer += "<span class='time_date'>" + prettyDate + "</span> </div>";
         }else{
-            answer += "<div class='received_msg'>";
-            answer += "<div class='received_withd_msg'></div>"
+            answer += "<div class='received_withd_msg'>"
             answer += "<p>" + messageContent + "</p>";
             answer += "<span class='time_date'>" + prettyDate + "</span> </div></div>";
         }
