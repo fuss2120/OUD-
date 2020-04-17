@@ -13,9 +13,9 @@
     <script type="text/javascript">
 
       var urlParams = new URLSearchParams(window.location.search);
-      var pid = urlParams.get('pid');
-
-      location.hash = '';
+      var pid = parseInt(location.hash.substr(1));
+      if (isNaN(pid))
+        pid = urlParams.get('pid');
 
       var patientMessageStreams;
 
