@@ -3,5 +3,6 @@ create table Patient_Categories (
     category                varchar(255) not null
 );
 
-insert into Patient_Categories(category) VALUES ('test category one');
-insert into Patient_Categories(category) VALUES ('test category two');
+insert into Patient_Categories(category) VALUES ('low risk');
+insert into Patient_Categories(category) VALUES ('medium risk');
+insert into Patient_Categories(category) VALUES ('high risk');
