@@ -37,25 +37,26 @@
       <div class="form-popup" id="myForm">
         <form id="patientDataForm" class="form-container">
           <div class="form-group">
-            <label>First Name</label>
-            <input name="firstName" type="text" class="form-control" placeholder="User Name">
+            <label>*First Name</label>
+            <input name="firstName" type="text" class="form-control Required">
           </div>
           <div class="form-group">
-            <label>Last Name</label>
-            <input name="lastName" type="text" class="form-control" placeholder="Password" >
+            <label>*Last Name</label>
+            <input name="lastName" type="text" class="form-control Required">
           </div>
           <div class="form-group">
-            <label>Phone Number</label>
-            <input name="phoneNumber" type="text" class="form-control" placeholder="Ex: 8152223333">
+            <label>*Phone Number</label>
+            <input name="phoneNumber" type="text" class="form-control Required" placeholder="Ex: 8152223333">
           </div>
           <div class="form-group">
-            <label>Patient Category</label>
+            <label>*Patient Category</label>
             <select id="category-dropdown" name="pCategory" type="text" class="form-control" >
                 <option disabled selected value></option>
             </select>
           </div>
           <button type="button" class="btn" onclick="userEntered()">Submit</button>
           <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+          <p2>Required fields are marked with *</p2>
         </form>
       </div>
       
