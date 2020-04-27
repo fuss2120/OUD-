@@ -24,7 +24,11 @@ function getPrettyStringForDateObj(dateObj) {
     var daysArr = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
     var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var hour = dateObj.getHours();
+	if (hour > 12) // convert 24 hour clock to 12 hour clock
+		hour = hour % 12;
     var minutes = dateObj.getMinutes();
+	if (minutes < 10) // pad with a zero
+		minutes = "0" + minutes;
     var suffix = dateObj.getHours() < 12 ? "am" : "pm";
     if (isToday(dateObj))
       return "Today at " + hour + ":" + minutes + suffix;
